@@ -17,6 +17,6 @@ The goal is to build one shared Hokkien data/codebase where dictionary lookup, i
 ```text
 desktop/              Desktop Python IME and HTML annotation tools
 data/                 Dictionary and source linguistic data
-public/audio_files/   Pronunciation audio assets
+public/audio_files/   Pronunciation audio assets, grouped by initial consonant
 tools/                Data conversion and validation scripts
 ```

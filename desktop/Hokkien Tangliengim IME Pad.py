@@ -3786,6 +3786,17 @@ def audio_lomari_filename_stem(unit: str, tone: str) -> str:
     return re.sub(r'[^A-Za-z0-9._-]+', '_', plain).strip('._-')
 
 
+def audio_lomari_filename_stem_aliases(unit: str) -> list[str]:
+    """Return legacy ASCII audio stems for syllabic nasal recordings."""
+    text = str(unit or '')
+    parsed = audio_unit_initial_medial_final(text)
+    if parsed == ('ᄋ', 'ᅳ', 'ᆼ'):
+        return ['ng']
+    if parsed == ('ᄋ', 'ᅳ', 'ᆷ'):
+        return ['m']
+    return []
+
+
 def audio_filename_candidates(unit: str, tone: str) -> list[str]:
     """Likely filenames for one recorded syllable/tone."""
     symbol = display_reading_tones(tone)
@@ -3797,6 +3808,13 @@ def audio_filename_candidates(unit: str, tone: str) -> list[str]:
             f'{lomari_stem}_{tone}',
             f'{lomari_stem}_t{tone}',
             f'{lomari_stem}-{tone}',
+        ])
+    for alias_stem in audio_lomari_filename_stem_aliases(unit):
+        stems.extend([
+            f'{alias_stem}{tone}',
+            f'{alias_stem}_{tone}',
+            f'{alias_stem}_t{tone}',
+            f'{alias_stem}-{tone}',
         ])
     stems.extend([
         f'{unit}{tone}',
@@ -3824,13 +3842,36 @@ def audio_filename_candidates(unit: str, tone: str) -> list[str]:
     return result
 
 
+_AUDIO_FILE_INDEX_CACHE: dict[str, dict[str, Path]] = {}
+
+
+def audio_file_index(folder: Path) -> dict[str, Path]:
+    """Return a cached filename index for flat or initial-folder audio layouts."""
+    key = str(folder.resolve()) if folder.exists() else str(folder)
+    cached = _AUDIO_FILE_INDEX_CACHE.get(key)
+    if cached is not None:
+        return cached
+
+    index: dict[str, Path] = {}
+    if folder.exists():
+        for path in folder.rglob('*'):
+            if path.is_file():
+                index.setdefault(path.name, path)
+    _AUDIO_FILE_INDEX_CACHE[key] = index
+    return index
+
+
 def find_audio_file(folder: Path, unit: str, tone: str) -> Path | None:
     lookup_tone = audio_lookup_tone_for_unit(unit, tone)
+    index = audio_file_index(folder)
     for lookup_unit in audio_lookup_units(unit):
         for name in audio_filename_candidates(lookup_unit, lookup_tone):
             path = folder / name
             if path.exists() and path.is_file():
                 return path
+            indexed_path = index.get(name)
+            if indexed_path is not None and indexed_path.exists() and indexed_path.is_file():
+                return indexed_path
     return None
 
 
