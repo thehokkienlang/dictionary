@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Project-generated temporary audio
+audio_files/_hokkien_ime_playback.wav
+
 # C extensions
 *.so
 
