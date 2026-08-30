@@ -11,3 +11,12 @@ The project brings together:
 - future English ↔ Hokkien translation support
 
 The goal is to build one shared Hokkien data/codebase where dictionary lookup, input, annotation, and translation can all improve together.
+
+## Repository layout
+
+```text
+desktop/              Desktop Python IME and HTML annotation tools
+data/                 Dictionary and source linguistic data
+public/audio_files/   Pronunciation audio assets
+tools/                Data conversion and validation scripts
+```

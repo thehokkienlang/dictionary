@@ -11,7 +11,7 @@ What it does
    ᄋᅷ, ᄋᆤ, ᄋힻ, ᅙᅡ
 4. Can show a Hanri candidate popup for selected Hangul readings.
 5. Copies the typed text to the clipboard.
-6. Plays recorded syllable audio from an audio_files folder.
+6. Plays recorded syllable audio from public/audio_files.
 
 How to run
 ----------
@@ -39,7 +39,7 @@ Tone digits 1 2 3 4 5 can be typed after a reading to filter Hanri candidates. A
 Hanri dictionary
 ----------------
 When Hanri candidates are ON, completed readings show a popup.
-The dictionary is loaded from hokkien_hanri_dict.tsv in the same folder as this .py.
+The dictionary is loaded from data/hokkien_hanri_dict.tsv in the repo.
 If the TSV is missing, a tiny built-in fallback dictionary is used.
 """
 
@@ -70,6 +70,43 @@ def bundled_resource_path(name: str) -> Path:
     if bundle_dir:
         return Path(bundle_dir) / name
     return Path(__file__).resolve().with_name(name)
+
+
+def source_repo_root() -> Path:
+    """Return the repo root when running from the source tree."""
+    script_dir = Path(__file__).resolve().parent
+    if script_dir.name.lower() == 'desktop':
+        return script_dir.parent
+    return script_dir
+
+
+def repo_data_path(name: str) -> Path:
+    return source_repo_root() / 'data' / name
+
+
+def repo_public_path(name: str) -> Path:
+    return source_repo_root() / 'public' / name
+
+
+def hanri_tsv_path_candidates() -> list[Path]:
+    env_path = os.environ.get('HOKKIEN_HANRI_DICT_PATH')
+    candidates: list[Path] = []
+    if env_path:
+        candidates.append(Path(env_path))
+    candidates.extend([
+        bundled_resource_path(HANRI_TSV_FILENAME),
+        repo_data_path(HANRI_TSV_FILENAME),
+        Path.cwd() / HANRI_TSV_FILENAME,
+        Path.cwd() / 'data' / HANRI_TSV_FILENAME,
+    ])
+    seen: set[str] = set()
+    unique: list[Path] = []
+    for path in candidates:
+        key = str(path)
+        if key not in seen:
+            unique.append(path)
+            seen.add(key)
+    return unique
 
 
 TONE_MARKER_MODULE_PATH = Path(
@@ -1283,16 +1320,11 @@ def load_hanri_dict(tsv_path: Path | None = None) -> dict[str, list[dict]]:
     global HANRI_DICT_SOURCE
 
     if tsv_path is None:
-        tsv_path = bundled_resource_path(HANRI_TSV_FILENAME)
+        tsv_path = next((path for path in hanri_tsv_path_candidates() if path.exists()), bundled_resource_path(HANRI_TSV_FILENAME))
 
     if not tsv_path.exists():
-        # Fallback to current working directory, useful if launched from IDLE.
-        cwd_path = Path.cwd() / HANRI_TSV_FILENAME
-        if cwd_path.exists():
-            tsv_path = cwd_path
-        else:
-            HANRI_DICT_SOURCE = 'built-in fallback; TSV not found'
-            return _fallback_hanri_dict()
+        HANRI_DICT_SOURCE = 'built-in fallback; TSV not found'
+        return _fallback_hanri_dict()
 
     entries: dict[str, list[dict]] = {}
 
@@ -1478,19 +1510,15 @@ def load_literal_digit_pronunciations(
                 pattern_map[number_key + following] = number_reading
 
     if tsv_path is None:
-        tsv_path = bundled_resource_path(HANRI_TSV_FILENAME)
+        tsv_path = next((path for path in hanri_tsv_path_candidates() if path.exists()), bundled_resource_path(HANRI_TSV_FILENAME))
 
     if not tsv_path.exists():
-        cwd_path = Path.cwd() / HANRI_TSV_FILENAME
-        if cwd_path.exists():
-            tsv_path = cwd_path
-        else:
-            patterns = sorted(
-                ((key, reading, numeric_key_digit_prefix_len(key)) for key, reading in pattern_map.items()),
-                key=lambda item: (len(item[0]), item[2]),
-                reverse=True,
-            )
-            return defaults, contexts, patterns
+        patterns = sorted(
+            ((key, reading, numeric_key_digit_prefix_len(key)) for key, reading in pattern_map.items()),
+            key=lambda item: (len(item[0]), item[2]), 
+            reverse=True,
+        )
+        return defaults, contexts, patterns
 
     try:
         with tsv_path.open('r', encoding='utf-8-sig', newline='') as f:
@@ -2617,14 +2645,17 @@ def is_audio_phrase_boundary(ch: str) -> bool:
 
 
 def audio_folder_path() -> Path:
-    """Return the audio_files folder next to the IME, with cwd fallback."""
-    try:
-        folder = bundled_resource_path(AUDIO_FOLDER_NAME)
-    except Exception:
-        folder = Path.cwd() / AUDIO_FOLDER_NAME
-    if folder.exists():
-        return folder
-    return Path.cwd() / AUDIO_FOLDER_NAME
+    """Return the pronunciation audio folder in bundle, repo, or cwd layouts."""
+    candidates = [
+        bundled_resource_path(AUDIO_FOLDER_NAME),
+        repo_public_path(AUDIO_FOLDER_NAME),
+        Path.cwd() / AUDIO_FOLDER_NAME,
+        Path.cwd() / 'public' / AUDIO_FOLDER_NAME,
+    ]
+    for folder in candidates:
+        if folder.exists():
+            return folder
+    return candidates[0]
 
 
 # Pronunciation-equivalent audio lookup rules.

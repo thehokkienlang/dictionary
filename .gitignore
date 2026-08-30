@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Project-generated temporary audio
-audio_files/_hokkien_ime_playback.wav
+public/audio_files/_hokkien_ime_playback.wav
 
 # C extensions
 *.so

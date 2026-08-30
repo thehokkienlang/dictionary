@@ -491,6 +491,18 @@ _MIXED_HANRI_READING_KEYS: list[str] | None = None
 _HANGUL_OVERRIDE_INDEX: dict[str, str] | None = None
 _HANGUL_OVERRIDE_KEYS: list[str] | None = None
 
+
+def source_repo_root() -> Path:
+    """Return the repo root when running from the source tree."""
+    script_dir = Path(__file__).resolve().parent
+    if script_dir.name.lower() == 'desktop':
+        return script_dir.parent
+    return script_dir
+
+
+def repo_data_path(name: str) -> Path:
+    return source_repo_root() / 'data' / name
+
 def decompose_precomposed_to_jamo(syll: str):
     """Return (initial_jamo, medial_jamo, final_jamo_or_empty) for a precomposed Hangul syllable."""
     idx = ord(syll) - 0xAC00
@@ -1561,8 +1573,10 @@ def hanri_tsv_candidates() -> list[Path]:
         candidates.append(Path(env_path))
     candidates.extend([
         Path(__file__).resolve().with_name(HANRI_TSV_FILENAME),
+        repo_data_path(HANRI_TSV_FILENAME),
         DEFAULT_HANRI_TSV_PATH,
         Path.cwd() / HANRI_TSV_FILENAME,
+        Path.cwd() / 'data' / HANRI_TSV_FILENAME,
     ])
     seen = set()
     unique: list[Path] = []
