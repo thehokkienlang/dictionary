@@ -217,16 +217,17 @@ h1 {
   grid-template-columns: minmax(90px, 0.7fr) minmax(120px, 1fr) auto;
   gap: 12px;
   align-items: baseline;
-  padding: 7px 9px;
+  padding: 5px 9px 7px;
   border-radius: 6px;
   background: #f9fbfd;
+  overflow: hidden;
 }
 
 .hangul {
   font-family: "Noto Sans KR", "Noto Sans CJK KR", "Noto Sans", sans-serif;
   font-size: 1.14rem;
   font-weight: 750;
-  padding-top: 0.36em;
+  padding-top: 0.1em;
   overflow-wrap: anywhere;
 }
 
@@ -241,12 +242,12 @@ h1 {
 
 .hangul-tone rt {
   position: absolute;
-  top: -0.95em;
+  top: -0.84em;
   left: 50%;
   transform: translateX(-50%);
   color: #1f2937;
   font-family: Calibri, Arial, sans-serif;
-  font-size: 0.82em;
+  font-size: 1.02em;
   font-weight: 700;
   line-height: 1;
   text-align: center;
