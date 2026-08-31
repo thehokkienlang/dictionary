@@ -18,7 +18,9 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TSV_PATH = REPO_ROOT / "data" / "hokkien_hanri_dict.tsv"
 DEFAULT_OUTPUT_PATH = REPO_ROOT / "public" / "data" / "hokkien-hanri-dict.json"
+DEFAULT_AUDIO_ROOT = REPO_ROOT / "public" / "audio_files"
 TONE_MARKER_PATH = REPO_ROOT / "desktop" / "hokkien_tone_marker_gui.py"
+IME_PATH = REPO_ROOT / "desktop" / "Hokkien Tangliengim IME Pad.py"
 
 SCHEMA_VERSION = 1
 
@@ -27,6 +29,16 @@ def load_tone_marker_module():
     spec = importlib.util.spec_from_file_location("tangliengim_tone_marker", TONE_MARKER_PATH)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Cannot load tone marker module from {TONE_MARKER_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_ime_module():
+    spec = importlib.util.spec_from_file_location("tangliengim_ime", IME_PATH)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load IME module from {IME_PATH}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -82,14 +94,58 @@ def reading_to_lomari(tone_marker, reading: str) -> str:
         return ""
 
 
+def web_path(path: Path) -> str:
+    return str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+
+
+def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, list[str]]:
+    files: list[str] = []
+    missing: list[str] = []
+    seen_files: set[str] = set()
+    seen_missing: set[str] = set()
+
+    if not reading:
+        return {"files": files, "missing": missing}
+
+    try:
+        units = ime.split_audio_reading_units(reading)
+    except Exception:
+        return {"files": files, "missing": [reading]}
+
+    for unit, tone in units:
+        try:
+            if ime.is_silent_audio_unit(unit, tone):
+                continue
+            paths, labels = ime.resolve_audio_files_for_unit(audio_root, unit, tone)
+        except Exception:
+            paths, labels = [], [f"{unit}{tone}"]
+
+        for path in paths:
+            try:
+                url = web_path(path)
+            except ValueError:
+                url = str(path).replace("\\", "/")
+            if url not in seen_files:
+                files.append(url)
+                seen_files.add(url)
+
+        for label in labels:
+            if label and label not in seen_missing:
+                missing.append(label)
+                seen_missing.add(label)
+
+    return {"files": files, "missing": missing}
+
+
 def append_index(index: dict[str, list[str]], key: str, entry_id: str) -> None:
     key = str(key or "")
     if key:
         index.setdefault(key, []).append(entry_id)
 
 
-def build_dictionary(tsv_path: Path) -> dict[str, Any]:
+def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> dict[str, Any]:
     tone_marker = load_tone_marker_module()
+    ime = load_ime_module()
     source_bytes = tsv_path.read_bytes()
 
     entries: list[dict[str, Any]] = []
@@ -140,6 +196,7 @@ def build_dictionary(tsv_path: Path) -> dict[str, Any]:
             entry_id = f"tsv-{row_number:05d}"
             lomari = reading_to_lomari(tone_marker, effective_reading)
             reading_base = tone_marker.strip_reading_tones(effective_reading)
+            audio = audio_for_reading(ime, audio_root, effective_reading)
             entry = {
                 "id": entry_id,
                 "row": row_number,
@@ -150,6 +207,7 @@ def build_dictionary(tsv_path: Path) -> dict[str, Any]:
                 "readingBase": reading_base,
                 "lomari": lomari,
                 "lomariKey": normalize_for_search(lomari),
+                "audio": audio,
                 "priority": priority,
                 "raw": {
                     "reading": raw_reading,
@@ -222,10 +280,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=DEFAULT_TSV_PATH)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
+    parser.add_argument("--audio-root", type=Path, default=DEFAULT_AUDIO_ROOT)
     parser.add_argument("--check", action="store_true", help="validate only; do not write output")
     args = parser.parse_args()
 
-    data = build_dictionary(args.input)
+    data = build_dictionary(args.input, args.audio_root)
     encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":"), sort_keys=False) + "\n"
 
     if args.check:

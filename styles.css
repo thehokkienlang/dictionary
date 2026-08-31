@@ -318,6 +318,7 @@ h1 {
   gap: 8px;
 }
 
+.audio-reading,
 .copy-reading {
   min-height: 30px;
   padding: 0 10px;
@@ -330,7 +331,19 @@ h1 {
   font-weight: 700;
 }
 
+.audio-reading:hover,
 .copy-reading:hover {
+  border-color: rgba(15, 118, 110, 0.5);
+  color: var(--accent-strong);
+}
+
+.audio-reading:disabled {
+  border-color: #e2e8f0;
+  color: #a8b3c2;
+  cursor: not-allowed;
+}
+
+.audio-reading.playing {
   border-color: rgba(15, 118, 110, 0.5);
   color: var(--accent-strong);
 }

@@ -18,6 +18,8 @@ const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
 const quickSearch = document.querySelector("#quickSearch");
 const filterButtons = [...document.querySelectorAll(".filter-button")];
+let audioRunId = 0;
+let currentAudio = null;
 
 const HANGUL_TONE_MARKS = {
   1: "ꞈ",
@@ -50,7 +52,7 @@ function visibleKind(kind) {
   const names = {
     plain_hanri: "Hanri",
     mixed_hanri: "Mixed",
-    hangul_override: "IME",
+    hangul_override: "Hangul",
     numeric_override: "Number",
     other: "Other",
   };
@@ -289,6 +291,49 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 1500);
 }
 
+function stopAudio() {
+  audioRunId += 1;
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = "";
+    currentAudio = null;
+  }
+}
+
+function playOneAudioFile(file, runId) {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio(encodeURI(file));
+    currentAudio = audio;
+    audio.addEventListener("ended", resolve, { once: true });
+    audio.addEventListener("error", () => reject(new Error(`Cannot play ${file}`)), { once: true });
+    audio.play().catch(reject);
+
+    if (runId !== audioRunId) {
+      audio.pause();
+      resolve();
+    }
+  });
+}
+
+async function playAudioSequence(files, button) {
+  stopAudio();
+  const runId = audioRunId;
+  button.classList.add("playing");
+  button.disabled = true;
+  try {
+    for (const file of files) {
+      if (runId !== audioRunId) break;
+      await playOneAudioFile(file, runId);
+    }
+  } finally {
+    if (runId === audioRunId) {
+      currentAudio = null;
+    }
+    button.classList.remove("playing");
+    button.disabled = false;
+  }
+}
+
 function renderReading(entry) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading";
@@ -322,6 +367,34 @@ function renderReading(entry) {
   source.textContent = entry.priority > 1 ? `priority ${entry.priority}` : "";
   source.title = `TSV row ${entry.row}`;
 
+  const audioFiles = entry.audio?.files || [];
+  const missingAudio = entry.audio?.missing || [];
+  const playButton = document.createElement("button");
+  playButton.className = "audio-reading";
+  playButton.type = "button";
+  playButton.textContent = "Listen";
+  playButton.setAttribute("aria-label", `Listen to ${entry.reading}`);
+  if (!audioFiles.length) {
+    playButton.disabled = true;
+    playButton.title = missingAudio.length ? `No audio for ${missingAudio.join(", ")}` : "No audio for this reading";
+  }
+  playButton.addEventListener("click", async () => {
+    if (!audioFiles.length) {
+      showToast(playButton.title);
+      return;
+    }
+    try {
+      await playAudioSequence(audioFiles, playButton);
+      if (missingAudio.length) {
+        showToast(`Missing audio: ${missingAudio.join(", ")}`);
+      }
+    } catch {
+      playButton.classList.remove("playing");
+      playButton.disabled = false;
+      showToast("Could not play audio");
+    }
+  });
+
   const copyButton = document.createElement("button");
   copyButton.className = "copy-reading";
   copyButton.type = "button";
@@ -337,7 +410,7 @@ function renderReading(entry) {
     }
   });
 
-  actions.append(source, copyButton);
+  actions.append(source, playButton, copyButton);
   wrapper.append(hangulField, lomariField, actions);
   return wrapper;
 }
@@ -367,7 +440,7 @@ function renderResults() {
   for (const group of shown) {
     const node = template.content.firstElementChild.cloneNode(true);
     const hanri = node.querySelector(".hanri");
-    hanri.replaceChildren(displayTextNode(group.hanri));
+    hanri.replaceChildren(renderToneMarkedReading(group.hanri));
     node.querySelector(".entry-meta").textContent = `${visibleKind(group.kind)} · ${group.readings.length} reading${group.readings.length === 1 ? "" : "s"}`;
     const readings = node.querySelector(".readings");
     group.readings.slice(0, 8).forEach((entry) => readings.append(renderReading(entry)));
