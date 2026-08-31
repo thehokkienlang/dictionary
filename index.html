@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hokkien Tangliengim Dictionary</title>
+    <meta
+      name="description"
+      content="Search Hanri, Tangliengim Hangul, and Lomari pronunciations from the Hokkien Tangliengim dictionary data."
+    >
+    <link rel="icon" href="assets/tangliengim-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <img class="brand-mark" src="assets/tangliengim-mark.svg" alt="" aria-hidden="true">
+        <div>
+          <p class="eyebrow">Hokkien Tangliengim</p>
+          <h1>Dictionary</h1>
+        </div>
+      </div>
+      <div class="data-status" id="dataStatus">Loading dictionary...</div>
+    </header>
+
+    <main class="app-shell">
+      <section class="search-panel" aria-label="Dictionary search">
+        <label class="search-label" for="searchInput">Search Hanri, Hangul, or Lomari</label>
+        <div class="search-row">
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            autocomplete="off"
+            placeholder="Try 問題, 뿐되4, bun-toe, 𤆬..."
+            autofocus
+          >
+          <button id="clearButton" class="icon-button" type="button" aria-label="Clear search">×</button>
+        </div>
+
+        <div class="filters" role="radiogroup" aria-label="Search mode">
+          <button class="filter-button active" type="button" data-mode="all" role="radio" aria-checked="true">All</button>
+          <button class="filter-button" type="button" data-mode="hanri" role="radio" aria-checked="false">Hanri</button>
+          <button class="filter-button" type="button" data-mode="reading" role="radio" aria-checked="false">Hangul</button>
+          <button class="filter-button" type="button" data-mode="lomari" role="radio" aria-checked="false">Lomari</button>
+        </div>
+      </section>
+
+      <section class="summary-bar" aria-live="polite">
+        <span id="resultSummary">Loading entries...</span>
+      </section>
+
+      <section id="results" class="results" aria-label="Dictionary results"></section>
+    </main>
+
+    <template id="resultTemplate">
+      <article class="entry">
+        <div class="entry-main">
+          <h2 class="hanri"></h2>
+          <div class="entry-meta"></div>
+        </div>
+        <div class="readings"></div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

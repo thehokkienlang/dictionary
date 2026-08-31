@@ -27,3 +27,11 @@ Rebuild the web dictionary data:
 ```powershell
 python tools/build_dictionary_json.py
 ```
+
+Run the dictionary MVP locally:
+
+```powershell
+python -m http.server 8000
+```
+
+Then open `http://localhost:8000/`.
