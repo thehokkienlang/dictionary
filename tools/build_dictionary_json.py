@@ -98,21 +98,23 @@ def web_path(path: Path) -> str:
     return str(path.relative_to(REPO_ROOT)).replace("\\", "/")
 
 
-def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, list[str]]:
+def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, Any]:
+    segments: list[dict[str, Any]] = []
     files: list[str] = []
     missing: list[str] = []
     seen_files: set[str] = set()
     seen_missing: set[str] = set()
 
     if not reading:
-        return {"files": files, "missing": missing}
+        return {"segments": segments, "files": files, "missing": missing}
 
     try:
-        units = ime.split_audio_reading_units(reading)
+        audio_units, unknown_hanri = ime.visible_text_to_audio_segments(reading)
     except Exception:
-        return {"files": files, "missing": [reading]}
+        return {"segments": segments, "files": files, "missing": [reading]}
 
-    for unit, tone in units:
+    raw_segments: list[dict[str, Any]] = []
+    for unit, tone, trim_start, trim_end, english_cluster_reduction in audio_units:
         try:
             if ime.is_silent_audio_unit(unit, tone):
                 continue
@@ -120,7 +122,8 @@ def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, list[str
         except Exception:
             paths, labels = [], [f"{unit}{tone}"]
 
-        for path in paths:
+        fallback_parts = ime.split_untoned_hangul_units(unit) if len(paths) > 1 else []
+        for idx, path in enumerate(paths):
             try:
                 url = web_path(path)
             except ValueError:
@@ -129,12 +132,48 @@ def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, list[str
                 files.append(url)
                 seen_files.add(url)
 
+            segment_unit = fallback_parts[idx] if idx < len(fallback_parts) else unit
+            segment_tone = str(tone if (not fallback_parts or idx == len(paths) - 1) else "3")
+            raw_segments.append({
+                "file": url,
+                "unit": segment_unit,
+                "tone": segment_tone,
+                "trimStart": bool(trim_start or idx > 0),
+                "trimEnd": bool(trim_end or idx < len(paths) - 1),
+                "lFinal": bool(ime.audio_unit_has_l_final(segment_unit)),
+                "shortOverlapFinal": bool(ime.audio_unit_has_short_overlap_final(segment_unit)),
+                "englishClusterHelper": bool(english_cluster_reduction),
+            })
+
         for label in labels:
             if label and label not in seen_missing:
                 missing.append(label)
                 seen_missing.add(label)
 
-    return {"files": files, "missing": missing}
+    for item in unknown_hanri:
+        label = str(item)
+        if label and label not in seen_missing:
+            missing.append(label)
+            seen_missing.add(label)
+
+    speed_all_segments = len(raw_segments) > 1
+    for idx, segment in enumerate(raw_segments):
+        speed = 1.0
+        if speed_all_segments:
+            previous_l_final = idx > 0 and bool(raw_segments[idx - 1]["lFinal"])
+            next_l_final = idx + 1 < len(raw_segments) and bool(raw_segments[idx + 1]["lFinal"])
+            if segment["englishClusterHelper"]:
+                speed = float(ime.AUDIO_ENGLISH_CLUSTER_SPEED_FACTOR)
+            elif str(segment["tone"]) == "4":
+                speed = float(ime.AUDIO_TONE4_SPEED_FACTOR)
+            elif segment["lFinal"] and (previous_l_final or next_l_final):
+                speed = float(ime.AUDIO_L_FINAL_SPEED_FACTOR)
+            else:
+                speed = float(ime.AUDIO_MULTI_SYLLABLE_SPEED_FACTOR)
+        segment["speed"] = speed
+        segments.append(segment)
+
+    return {"segments": segments, "files": files, "missing": missing}
 
 
 def append_index(index: dict[str, list[str]], key: str, entry_id: str) -> None:
