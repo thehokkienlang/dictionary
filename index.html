@@ -25,25 +25,26 @@
 
     <main class="app-shell">
       <section class="search-panel" aria-label="Dictionary search">
-        <label class="search-label" for="searchInput">Search Hanri, Hangul, or Lomari</label>
+        <div class="search-heading">
+          <label class="search-label" for="searchInput">Search</label>
+          <div class="input-modes" role="radiogroup" aria-label="Input mode">
+            <button class="input-mode-button active" type="button" data-input-mode="hanri-hangul" role="radio" aria-checked="true">Hanri + Hangul</button>
+            <button class="input-mode-button" type="button" data-input-mode="lomari" role="radio" aria-checked="false">Lomari</button>
+          </div>
+        </div>
         <div class="search-row">
           <input
             id="searchInput"
             class="search-input"
             type="search"
             autocomplete="off"
-            placeholder="Try 問題, 뿐되4, bun-toe, 𤆬..."
+            placeholder="Type Hangul keys or Hanri, e.g. Qnsehl for 問題..."
             autofocus
           >
           <button id="clearButton" class="icon-button" type="button" aria-label="Clear search">×</button>
         </div>
 
-        <div class="filters" role="radiogroup" aria-label="Search mode">
-          <button class="filter-button active" type="button" data-mode="all" role="radio" aria-checked="true">All</button>
-          <button class="filter-button" type="button" data-mode="hanri" role="radio" aria-checked="false">Hanri</button>
-          <button class="filter-button" type="button" data-mode="reading" role="radio" aria-checked="false">Hangul</button>
-          <button class="filter-button" type="button" data-mode="lomari" role="radio" aria-checked="false">Lomari</button>
-        </div>
+        <div class="ime-candidates" id="imeCandidates" aria-label="Hanri candidates"></div>
 
         <div class="quick-search" id="quickSearch" aria-label="Suggested searches"></div>
       </section>
@@ -65,6 +66,7 @@
       </article>
     </template>
 
+    <script src="web-hangul-ime.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

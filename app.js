@@ -6,8 +6,9 @@ const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
 const state = {
   entries: [],
   groups: [],
-  mode: "all",
+  inputMode: "hanri-hangul",
   loaded: false,
+  readingCandidates: new Map(),
 };
 
 const searchInput = document.querySelector("#searchInput");
@@ -17,7 +18,10 @@ const dataStatus = document.querySelector("#dataStatus");
 const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
 const quickSearch = document.querySelector("#quickSearch");
-const filterButtons = [...document.querySelectorAll(".filter-button")];
+const inputModeButtons = [...document.querySelectorAll(".input-mode-button")];
+const imeCandidates = document.querySelector("#imeCandidates");
+const hangulComposer = new TangliengimHangulIme.Composer();
+let internalSearchUpdate = false;
 let audioRunId = 0;
 let currentAudio = null;
 let sharedAudioContext = null;
@@ -117,11 +121,9 @@ function scoreGroup(group, query, mode) {
     return group.kind === "plain_hanri" ? 1 : 0;
   }
 
-  const fields = mode === "all"
-    ? ["hanri", "reading", "readingBase", "lomari", "all"]
-    : mode === "reading"
-      ? ["reading", "readingBase"]
-      : [mode];
+  const fields = mode === "lomari"
+    ? ["lomari"]
+    : ["hanri", "reading", "readingBase"];
 
   let best = 0;
   for (const field of fields) {
@@ -141,7 +143,7 @@ function searchGroups() {
   const limit = query ? MAX_SEARCH_RESULTS : MAX_INITIAL_RESULTS;
 
   const matches = state.groups
-    .map((group) => ({ group, score: scoreGroup(group, query, state.mode) }))
+    .map((group) => ({ group, score: scoreGroup(group, query, state.inputMode) }))
     .filter((item) => item.score > 0)
     .sort((a, b) =>
       b.score - a.score ||
@@ -155,6 +157,126 @@ function searchGroups() {
     shown: matches.slice(0, limit).map((item) => item.group),
     total: matches.length,
   };
+}
+
+function buildReadingCandidateMap(entries) {
+  const byReading = new Map();
+  for (const entry of entries.filter(searchableEntry)) {
+    const readingKeys = [
+      entry.readingBase,
+      entry.reading,
+      entry.raw?.reading,
+    ].map((value) => normalizeText(TangliengimHangulIme.normalizeReadingBase(value)));
+
+    for (const key of new Set(readingKeys.filter(Boolean))) {
+      if (!byReading.has(key)) byReading.set(key, []);
+      byReading.get(key).push(entry);
+    }
+  }
+
+  for (const candidates of byReading.values()) {
+    candidates.sort((a, b) =>
+      a.priority - b.priority || a.row - b.row || a.hanri.localeCompare(b.hanri)
+    );
+  }
+  return byReading;
+}
+
+function isImeCandidateChar(char) {
+  if (!char) return false;
+  return /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7A3ˆˋ`ˊˉꞈˎˏˍ12345]/u.test(char);
+}
+
+function activeCandidateRange() {
+  if (state.inputMode !== "hanri-hangul") return null;
+  const text = searchInput.value;
+  const cursor = searchInput.selectionStart ?? text.length;
+  if (cursor !== (searchInput.selectionEnd ?? cursor)) return null;
+
+  let start = cursor;
+  while (start > 0 && isImeCandidateChar(text[start - 1])) start -= 1;
+  if (start === cursor) return null;
+  return { text, start, end: cursor, segment: text.slice(start, cursor) };
+}
+
+function findImeCandidates() {
+  const range = activeCandidateRange();
+  if (!range) return [];
+
+  const chars = [...range.segment];
+  const starts = [];
+  let offset = range.start;
+  for (const char of chars) {
+    starts.push(offset);
+    offset += char.length;
+  }
+
+  const found = [];
+  for (let index = 0; index < chars.length; index += 1) {
+    const suffix = chars.slice(index).join("");
+    const key = normalizeText(TangliengimHangulIme.normalizeReadingBase(suffix));
+    const entries = state.readingCandidates.get(key);
+    if (!entries?.length) continue;
+    for (const entry of entries) {
+      found.push({
+        entry,
+        start: starts[index],
+        end: range.end,
+        length: suffix.length,
+      });
+    }
+    if (found.length) break;
+  }
+
+  const seen = new Set();
+  return found
+    .filter(({ entry }) => {
+      const key = `${entry.hanri}\u0000${entry.reading}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 9);
+}
+
+function renderImeCandidates() {
+  if (!imeCandidates) return;
+  imeCandidates.replaceChildren();
+
+  if (state.inputMode !== "hanri-hangul" || !state.loaded) {
+    imeCandidates.hidden = true;
+    return;
+  }
+
+  const candidates = findImeCandidates();
+  imeCandidates.hidden = !candidates.length;
+  if (!candidates.length) return;
+
+  for (const [index, candidate] of candidates.entries()) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ime-candidate";
+    const number = document.createElement("span");
+    number.className = "candidate-number";
+    number.textContent = String(index + 1);
+    const hanri = document.createElement("span");
+    hanri.className = "candidate-hanri";
+    hanri.textContent = candidate.entry.hanri;
+    const reading = document.createElement("span");
+    reading.className = "candidate-reading";
+    reading.append(renderToneMarkedReading(candidate.entry.reading));
+    button.append(number, hanri, reading);
+    button.addEventListener("mousedown", (event) => event.preventDefault());
+    button.addEventListener("click", () => applyImeCandidate(candidate));
+    imeCandidates.append(button);
+  }
+}
+
+function applyImeCandidate(candidate) {
+  const text = searchInput.value;
+  const next = `${text.slice(0, candidate.start)}${candidate.entry.hanri}${text.slice(candidate.end)}`;
+  hangulComposer.setText(next, candidate.start + candidate.entry.hanri.length);
+  updateSearchFromComposer();
 }
 
 function isToneMark(char) {
@@ -677,6 +799,7 @@ function renderResults() {
   const { rawQuery, shown, total } = searchGroups();
   results.replaceChildren();
   clearButton.hidden = !searchInput.value;
+  renderImeCandidates();
 
   if (!shown.length) {
     const empty = document.createElement("div");
@@ -715,14 +838,93 @@ function renderResults() {
     : `Showing ${shown.length} starter entries from ${state.groups.length} searchable entries`;
 }
 
-function setMode(mode) {
-  state.mode = mode;
-  for (const button of filterButtons) {
-    const active = button.dataset.mode === mode;
+function setInputMode(mode) {
+  state.inputMode = mode === "lomari" ? "lomari" : "hanri-hangul";
+  for (const button of inputModeButtons) {
+    const active = button.dataset.inputMode === state.inputMode;
     button.classList.toggle("active", active);
     button.setAttribute("aria-checked", String(active));
   }
+  searchInput.placeholder = state.inputMode === "lomari"
+    ? "Try bun-toe, se-kai, kiaa..."
+    : "Type Hangul keys or Hanri, e.g. Qnsehl for 問題...";
+  searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
+  hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
   renderResults();
+}
+
+function replaceSelectionBeforeImeKey() {
+  const start = searchInput.selectionStart ?? searchInput.value.length;
+  const end = searchInput.selectionEnd ?? start;
+  if (start === end) return start;
+  const next = `${searchInput.value.slice(0, start)}${searchInput.value.slice(end)}`;
+  hangulComposer.setText(next, start);
+  return start;
+}
+
+function syncComposerFromSearchInput() {
+  const text = hangulComposer.text();
+  const cursor = searchInput.selectionStart ?? searchInput.value.length;
+  const selectionEnd = searchInput.selectionEnd ?? cursor;
+
+  if (searchInput.value !== text || cursor !== selectionEnd) {
+    hangulComposer.setText(searchInput.value, cursor);
+    return;
+  }
+
+  if (cursor !== hangulComposer.displayCursorPos()) {
+    hangulComposer.commit();
+    hangulComposer.cursorPos = Math.max(0, Math.min(cursor, hangulComposer.output.length));
+    hangulComposer.keyHistory = [];
+  }
+}
+
+function updateSearchFromComposer() {
+  internalSearchUpdate = true;
+  searchInput.value = hangulComposer.text();
+  const cursor = hangulComposer.displayCursorPos();
+  searchInput.setSelectionRange(cursor, cursor);
+  internalSearchUpdate = false;
+  renderResults();
+}
+
+function shouldHandleImeKey(event) {
+  if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return false;
+  if (event.key.length === 1) return true;
+  return ["Backspace", "ArrowLeft", "ArrowRight", "Home", "End", "Enter"].includes(event.key);
+}
+
+function handleHanriHangulKeydown(event) {
+  if (state.inputMode !== "hanri-hangul" || !shouldHandleImeKey(event)) return;
+
+  if (event.key === "Enter") {
+    renderImeCandidates();
+    return;
+  }
+
+  event.preventDefault();
+  syncComposerFromSearchInput();
+  replaceSelectionBeforeImeKey();
+
+  if (event.key === "Backspace") {
+    hangulComposer.backspace();
+  } else if (event.key === "ArrowLeft") {
+    hangulComposer.moveLeft();
+  } else if (event.key === "ArrowRight") {
+    hangulComposer.moveRight();
+  } else if (event.key === "Home") {
+    hangulComposer.commit();
+    hangulComposer.cursorPos = 0;
+    hangulComposer.keyHistory = [];
+  } else if (event.key === "End") {
+    hangulComposer.commit();
+    hangulComposer.cursorPos = hangulComposer.output.length;
+    hangulComposer.keyHistory = [];
+  } else if (event.key.length === 1) {
+    hangulComposer.processChar(event.key);
+  }
+
+  updateSearchFromComposer();
 }
 
 async function loadDictionary() {
@@ -734,6 +936,7 @@ async function loadDictionary() {
     const data = await response.json();
     state.entries = data.entries || [];
     state.groups = groupEntries(state.entries);
+    state.readingCandidates = buildReadingCandidateMap(state.entries);
     state.loaded = true;
     dataStatus.textContent = `${data.counts?.active_entries || state.entries.length} active TSV entries`;
     renderResults();
@@ -749,14 +952,28 @@ async function loadDictionary() {
   }
 }
 
-searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", handleHanriHangulKeydown);
+searchInput.addEventListener("input", () => {
+  if (internalSearchUpdate) return;
+  if (state.inputMode === "hanri-hangul") {
+    hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
+  }
+  renderResults();
+});
+searchInput.addEventListener("click", () => {
+  if (state.inputMode === "hanri-hangul") {
+    syncComposerFromSearchInput();
+    renderImeCandidates();
+  }
+});
 clearButton.addEventListener("click", () => {
   searchInput.value = "";
+  hangulComposer.setText("", 0);
   searchInput.focus();
   renderResults();
 });
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => setMode(button.dataset.mode));
+inputModeButtons.forEach((button) => {
+  button.addEventListener("click", () => setInputMode(button.dataset.inputMode));
 });
 
 if (quickSearch) {
@@ -767,6 +984,7 @@ if (quickSearch) {
     button.textContent = value;
     button.addEventListener("click", () => {
       searchInput.value = value;
+      hangulComposer.setText(value, value.length);
       searchInput.focus();
       renderResults();
     });
@@ -775,3 +993,4 @@ if (quickSearch) {
 }
 
 loadDictionary();
+setInputMode("hanri-hangul");
