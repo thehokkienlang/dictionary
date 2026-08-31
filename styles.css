@@ -242,8 +242,8 @@ h1 {
 
 .hangul-tone rt {
   position: absolute;
-  top: -0.84em;
-  left: 50%;
+  top: calc(-0.84em - 2px);
+  left: calc(50% - 2px);
   transform: translateX(-50%);
   color: #1f2937;
   font-family: Calibri, Arial, sans-serif;
