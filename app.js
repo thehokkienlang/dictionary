@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-english";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-crossmode";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
 const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
@@ -124,17 +124,21 @@ function scoreGroup(group, query, mode) {
     return group.kind === "plain_hanri" ? 1 : 0;
   }
 
-  const fields = mode === "lomari"
-    ? ["lomari", "english"]
-    : ["hanri", "reading", "readingBase", "english"];
+  const fields = [
+    { name: "hanri", boost: mode === "hanri-hangul" ? 6 : 0 },
+    { name: "reading", boost: mode === "hanri-hangul" ? 6 : 0 },
+    { name: "readingBase", boost: mode === "hanri-hangul" ? 6 : 0 },
+    { name: "lomari", boost: mode === "lomari" ? 6 : 0 },
+    { name: "english", boost: 0 },
+  ];
 
   let best = 0;
   for (const field of fields) {
-    const value = group.search[field] || "";
+    const value = group.search[field.name] || "";
     if (!value) continue;
-    if (value === query) best = Math.max(best, 100);
-    else if (value.startsWith(query)) best = Math.max(best, 80);
-    else if (value.includes(query)) best = Math.max(best, 55);
+    if (value === query) best = Math.max(best, 100 + field.boost);
+    else if (value.startsWith(query)) best = Math.max(best, 80 + field.boost);
+    else if (value.includes(query)) best = Math.max(best, 55 + field.boost);
   }
 
   return best;
@@ -859,8 +863,8 @@ function setInputMode(mode) {
     button.setAttribute("aria-checked", String(active));
   }
   searchInput.placeholder = state.inputMode === "lomari"
-    ? "Try bun-toe, se-kai, kiaa..."
-    : "Type Hangul keys or Hanri, e.g. Qnsehl for 問題...";
+    ? "Type Lomari, or paste Hanri, Hangul, or English..."
+    : "Type Hangul keys, or paste Hanri, Lomari, or English...";
   searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
   hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
   renderResults();
