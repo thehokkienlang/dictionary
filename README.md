@@ -18,5 +18,12 @@ The goal is to build one shared Hokkien data/codebase where dictionary lookup, i
 desktop/              Desktop Python IME and HTML annotation tools
 data/                 Dictionary and source linguistic data
 public/audio_files/   Pronunciation audio assets, grouped by initial consonant
+public/data/          Generated JSON data for the website
 tools/                Data conversion and validation scripts
+```
+
+Rebuild the web dictionary data:
+
+```powershell
+python tools/build_dictionary_json.py
 ```
