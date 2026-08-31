@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-toggle";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-dropdown";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
 const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
@@ -18,7 +18,7 @@ const dataStatus = document.querySelector("#dataStatus");
 const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
 const quickSearch = document.querySelector("#quickSearch");
-const inputModeToggle = document.querySelector("#inputModeToggle");
+const inputModeSelect = document.querySelector("#inputModeSelect");
 const imeCandidates = document.querySelector("#imeCandidates");
 const hangulComposer = new TangliengimHangulIme.Composer();
 let internalSearchUpdate = false;
@@ -857,17 +857,10 @@ function renderResults() {
 
 function setInputMode(mode) {
   state.inputMode = mode === "lomari" ? "lomari" : "hanri-hangul";
-  if (inputModeToggle) {
-    inputModeToggle.textContent = state.inputMode === "lomari" ? "Lomari" : "Hanri + Hangul";
-    inputModeToggle.dataset.inputMode = state.inputMode;
-    inputModeToggle.setAttribute(
-      "aria-label",
-      state.inputMode === "lomari" ? "Switch input to Hanri plus Hangul" : "Switch input to Lomari"
-    );
+  if (inputModeSelect) {
+    inputModeSelect.value = state.inputMode;
   }
-  searchInput.placeholder = state.inputMode === "lomari"
-    ? "Type Lomari, or paste Hanri, Hangul, or English..."
-    : "Type Hangul keys, or paste Hanri, Lomari, or English...";
+  searchInput.placeholder = "Search Hanri, Hangul, Lomari, or English...";
   searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
   hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
   renderResults();
@@ -992,8 +985,8 @@ clearButton.addEventListener("click", () => {
   searchInput.focus();
   renderResults();
 });
-inputModeToggle?.addEventListener("click", () => {
-  setInputMode(state.inputMode === "lomari" ? "hanri-hangul" : "lomari");
+inputModeSelect?.addEventListener("change", () => {
+  setInputMode(inputModeSelect.value);
   searchInput.focus();
 });
 

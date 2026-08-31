@@ -8,8 +8,8 @@
       name="description"
       content="Search Hanri, Tangliengim Hangul, and Lomari pronunciations from the Hokkien Tangliengim dictionary data."
     >
-    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-toggle" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260901-toggle">
+    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-dropdown" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=20260901-dropdown">
   </head>
   <body>
     <header class="app-header">
@@ -28,8 +28,11 @@
         <div class="search-heading">
           <label class="search-label" for="searchInput">Search</label>
           <div class="input-mode-group">
-            <span class="input-mode-prefix">Input:</span>
-            <button id="inputModeToggle" class="input-mode-toggle" type="button" aria-label="Switch input mode">Hanri + Hangul</button>
+            <label class="input-mode-prefix" for="inputModeSelect">Input:</label>
+            <select id="inputModeSelect" class="input-mode-select" aria-label="Input mode">
+              <option value="hanri-hangul">Hanri + Hangul</option>
+              <option value="lomari">Lomari</option>
+            </select>
           </div>
         </div>
         <div class="search-row">
@@ -38,7 +41,7 @@
             class="search-input"
             type="search"
             autocomplete="off"
-            placeholder="Type Hangul keys or Hanri, e.g. Qnsehl for 問題..."
+            placeholder="Search Hanri, Hangul, Lomari, or English..."
             autofocus
           >
           <button id="clearButton" class="icon-button" type="button" aria-label="Clear search">×</button>
@@ -70,7 +73,7 @@
       </article>
     </template>
 
-    <script src="web-hangul-ime.js?v=20260901-toggle"></script>
-    <script src="app.js?v=20260901-toggle"></script>
+    <script src="web-hangul-ime.js?v=20260901-dropdown"></script>
+    <script src="app.js?v=20260901-dropdown"></script>
   </body>
 </html>
