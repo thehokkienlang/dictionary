@@ -17,6 +17,13 @@ const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 
+const HANGUL_TONE_MARKS = {
+  1: "ꞈ",
+  2: "ˎ",
+  4: "ˏ",
+  5: "ˍ",
+};
+
 function normalizeText(value) {
   return String(value || "")
     .normalize("NFKD")
@@ -132,13 +139,102 @@ function searchGroups() {
   };
 }
 
+function isToneDigit(char) {
+  return /^[12345]$/.test(char);
+}
+
+function isPrecomposedHangul(char) {
+  if (!char) return false;
+  const code = char.codePointAt(0);
+  return code >= 0xac00 && code <= 0xd7a3;
+}
+
+function isInitialJamo(char) {
+  if (!char) return false;
+  const code = char.codePointAt(0);
+  return (code >= 0x1100 && code <= 0x1112) || char === "ᅙ";
+}
+
+function isVowelJamo(char) {
+  if (!char) return false;
+  const code = char.codePointAt(0);
+  return (code >= 0x1161 && code <= 0x1175) || char === "ᅷ" || char === "ᆤ" || char === "ힻ";
+}
+
+function isFinalJamo(char) {
+  if (!char || isVowelJamo(char)) return false;
+  const code = char.codePointAt(0);
+  return code >= 0x11a8 && code <= 0x11ff;
+}
+
+function readingUnitAt(text, index) {
+  const char = text[index];
+  if (!char) return null;
+
+  if (isPrecomposedHangul(char)) {
+    return { text: char, end: index + 1, canCarryTone: true };
+  }
+
+  if (isInitialJamo(char) && isVowelJamo(text[index + 1])) {
+    let end = index + 2;
+    if (isFinalJamo(text[end])) {
+      end += 1;
+    }
+    return { text: text.slice(index, end), end, canCarryTone: true };
+  }
+
+  return { text: char, end: index + 1, canCarryTone: false };
+}
+
+function tonedHangulNode(unit, tone) {
+  const mark = HANGUL_TONE_MARKS[tone];
+  if (!mark) {
+    return document.createTextNode(unit);
+  }
+
+  const ruby = document.createElement("ruby");
+  ruby.className = "hangul-tone";
+  ruby.setAttribute("aria-label", `${unit}${tone}`);
+  ruby.append(document.createTextNode(unit));
+
+  const rt = document.createElement("rt");
+  rt.textContent = mark;
+  ruby.append(rt);
+  return ruby;
+}
+
+function renderToneMarkedReading(reading) {
+  const fragment = document.createDocumentFragment();
+  const text = String(reading || "");
+  let index = 0;
+
+  while (index < text.length) {
+    const unit = readingUnitAt(text, index);
+    if (!unit) {
+      break;
+    }
+
+    const tone = text[unit.end];
+    if (unit.canCarryTone && isToneDigit(tone)) {
+      fragment.append(tonedHangulNode(unit.text, tone));
+      index = unit.end + 1;
+    } else {
+      fragment.append(document.createTextNode(unit.text));
+      index = unit.end;
+    }
+  }
+
+  return fragment;
+}
+
 function renderReading(entry) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading";
 
   const hangul = document.createElement("span");
   hangul.className = "hangul";
-  hangul.textContent = entry.reading;
+  hangul.append(renderToneMarkedReading(entry.reading));
+  hangul.title = entry.reading;
 
   const lomari = document.createElement("span");
   lomari.className = "lomari";
