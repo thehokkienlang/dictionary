@@ -1,6 +1,7 @@
 const DATA_URL = "public/data/hokkien-hanri-dict.json";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
+const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
 
 const state = {
   entries: [],
@@ -15,6 +16,7 @@ const resultSummary = document.querySelector("#resultSummary");
 const dataStatus = document.querySelector("#dataStatus");
 const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
+const quickSearch = document.querySelector("#quickSearch");
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 
 const HANGUL_TONE_MARKS = {
@@ -227,24 +229,89 @@ function renderToneMarkedReading(reading) {
   return fragment;
 }
 
+function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+  return Promise.resolve();
+}
+
+function showToast(message) {
+  let toast = document.querySelector(".toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    document.body.append(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("visible");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 1500);
+}
+
 function renderReading(entry) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading";
 
+  const hangulField = document.createElement("div");
+  hangulField.className = "reading-field";
+  const hangulLabel = document.createElement("span");
+  hangulLabel.className = "field-label";
+  hangulLabel.textContent = "Hangul";
   const hangul = document.createElement("span");
   hangul.className = "hangul";
   hangul.append(renderToneMarkedReading(entry.reading));
   hangul.title = entry.reading;
+  hangulField.append(hangulLabel, hangul);
 
+  const lomariField = document.createElement("div");
+  lomariField.className = "reading-field";
+  const lomariLabel = document.createElement("span");
+  lomariLabel.className = "field-label";
+  lomariLabel.textContent = "Lomari";
   const lomari = document.createElement("span");
   lomari.className = "lomari";
   lomari.textContent = entry.lomari || " ";
+  lomariField.append(lomariLabel, lomari);
+
+  const actions = document.createElement("div");
+  actions.className = "reading-actions";
 
   const source = document.createElement("span");
   source.className = "source-row";
-  source.textContent = `row ${entry.row}`;
+  source.textContent = entry.priority > 1 ? `priority ${entry.priority}` : "";
+  source.title = `TSV row ${entry.row}`;
 
-  wrapper.append(hangul, lomari, source);
+  const copyButton = document.createElement("button");
+  copyButton.className = "copy-reading";
+  copyButton.type = "button";
+  copyButton.textContent = "Copy";
+  copyButton.setAttribute("aria-label", `Copy ${entry.reading} ${entry.lomari || ""}`.trim());
+  copyButton.addEventListener("click", async () => {
+    const value = entry.lomari ? `${entry.reading}\t${entry.lomari}` : entry.reading;
+    try {
+      await copyText(value);
+      showToast("Reading copied");
+    } catch {
+      showToast("Could not copy reading");
+    }
+  });
+
+  actions.append(source, copyButton);
+  wrapper.append(hangulField, lomariField, actions);
   return wrapper;
 }
 
@@ -258,9 +325,13 @@ function renderResults() {
   if (!shown.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
-    empty.textContent = rawQuery
-      ? "No matching entries yet."
-      : "No displayable dictionary entries found.";
+    const title = document.createElement("strong");
+    title.textContent = rawQuery ? "No matching entries yet" : "Start with a search";
+    const note = document.createElement("span");
+    note.textContent = rawQuery
+      ? "Try Hanri, Tangliengim Hangul, or plain Lomari without tone marks."
+      : "Search by Chinese characters, Tangliengim Hangul, or Lomari.";
+    empty.append(title, note);
     results.append(empty);
     resultSummary.textContent = rawQuery ? "0 results" : "No entries";
     return;
@@ -284,7 +355,7 @@ function renderResults() {
   const capped = shown.length < total ? `, showing ${shown.length}` : "";
   resultSummary.textContent = rawQuery
     ? `${total} result${total === 1 ? "" : "s"}${capped}`
-    : `${state.groups.length} searchable entries, showing ${shown.length}`;
+    : `Showing ${shown.length} starter entries from ${state.groups.length} searchable entries`;
 }
 
 function setMode(mode) {
@@ -330,5 +401,20 @@ clearButton.addEventListener("click", () => {
 filterButtons.forEach((button) => {
   button.addEventListener("click", () => setMode(button.dataset.mode));
 });
+
+if (quickSearch) {
+  for (const value of QUICK_SEARCHES) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quick-chip";
+    button.textContent = value;
+    button.addEventListener("click", () => {
+      searchInput.value = value;
+      searchInput.focus();
+      renderResults();
+    });
+    quickSearch.append(button);
+  }
+}
 
 loadDictionary();
