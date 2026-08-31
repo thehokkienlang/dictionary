@@ -621,7 +621,6 @@ function renderReading(entry) {
 
   const source = document.createElement("span");
   source.className = "source-row";
-  source.textContent = entry.priority > 1 ? `priority ${entry.priority}` : "";
   source.title = `TSV row ${entry.row}`;
 
   const audioSegments = normalizeAudioSegments(entry.audio);
