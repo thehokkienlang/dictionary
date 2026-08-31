@@ -21,10 +21,22 @@ const filterButtons = [...document.querySelectorAll(".filter-button")];
 
 const HANGUL_TONE_MARKS = {
   1: "ꞈ",
+  "ˆ": "ꞈ",
+  "ꞈ": "ꞈ",
   2: "ˎ",
+  "ˋ": "ˎ",
+  "`": "ˎ",
+  "ˎ": "ˎ",
   4: "ˏ",
+  "ˊ": "ˏ",
+  "ˏ": "ˏ",
   5: "ˍ",
+  "ˉ": "ˍ",
+  "ˍ": "ˍ",
 };
+
+const HANGUL_TONE_CHARS = new Set([...Object.keys(HANGUL_TONE_MARKS), "3"]);
+const LATIN_WIDTH_APOSTROPHES = new Set(["’", "‘", "'"]);
 
 function normalizeText(value) {
   return String(value || "")
@@ -141,8 +153,23 @@ function searchGroups() {
   };
 }
 
-function isToneDigit(char) {
-  return /^[12345]$/.test(char);
+function isToneMark(char) {
+  return HANGUL_TONE_CHARS.has(char);
+}
+
+function displayTextNode(text) {
+  const fragment = document.createDocumentFragment();
+  for (const char of [...String(text || "")]) {
+    if (LATIN_WIDTH_APOSTROPHES.has(char)) {
+      const span = document.createElement("span");
+      span.className = "latin-apostrophe";
+      span.textContent = char;
+      fragment.append(span);
+    } else {
+      fragment.append(document.createTextNode(char));
+    }
+  }
+  return fragment;
 }
 
 function isPrecomposedHangul(char) {
@@ -217,11 +244,11 @@ function renderToneMarkedReading(reading) {
     }
 
     const tone = text[unit.end];
-    if (unit.canCarryTone && isToneDigit(tone)) {
+    if (unit.canCarryTone && isToneMark(tone)) {
       fragment.append(tonedHangulNode(unit.text, tone));
       index = unit.end + 1;
     } else {
-      fragment.append(document.createTextNode(unit.text));
+      fragment.append(displayTextNode(unit.text));
       index = unit.end;
     }
   }
@@ -339,7 +366,8 @@ function renderResults() {
 
   for (const group of shown) {
     const node = template.content.firstElementChild.cloneNode(true);
-    node.querySelector(".hanri").textContent = group.hanri;
+    const hanri = node.querySelector(".hanri");
+    hanri.replaceChildren(displayTextNode(group.hanri));
     node.querySelector(".entry-meta").textContent = `${visibleKind(group.kind)} · ${group.readings.length} reading${group.readings.length === 1 ? "" : "s"}`;
     const readings = node.querySelector(".readings");
     group.readings.slice(0, 8).forEach((entry) => readings.append(renderReading(entry)));

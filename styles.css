@@ -226,6 +226,12 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.latin-apostrophe {
+  font-family: Calibri, "Segoe UI", Arial, sans-serif;
+  font-variant-east-asian: normal;
+  letter-spacing: 0;
+}
+
 .entry-meta {
   margin-top: 8px;
   color: var(--muted);
