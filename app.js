@@ -85,6 +85,7 @@ function groupEntries(entries) {
           reading: "",
           readingBase: "",
           lomari: "",
+          english: "",
           all: "",
         },
       });
@@ -104,11 +105,13 @@ function groupEntries(entries) {
     group.search.reading = normalizeText(group.readings.map((item) => item.reading).join(" "));
     group.search.readingBase = normalizeText(group.readings.map((item) => item.readingBase).join(" "));
     group.search.lomari = normalizeText(group.readings.map((item) => item.lomari).join(" "));
+    group.search.english = normalizeText(group.readings.map((item) => item.english || "").join(" "));
     group.search.all = [
       group.search.hanri,
       group.search.reading,
       group.search.readingBase,
       group.search.lomari,
+      group.search.english,
       normalizeText(group.readings.map((item) => item.raw?.reading || "").join(" ")),
     ].join(" ");
   }
@@ -122,8 +125,8 @@ function scoreGroup(group, query, mode) {
   }
 
   const fields = mode === "lomari"
-    ? ["lomari"]
-    : ["hanri", "reading", "readingBase"];
+    ? ["lomari", "english"]
+    : ["hanri", "reading", "readingBase", "english"];
 
   let best = 0;
   for (const field of fields) {
@@ -738,6 +741,16 @@ function renderReading(entry) {
   lomari.textContent = entry.lomari || " ";
   lomariField.append(lomariLabel, lomari);
 
+  const englishField = document.createElement("div");
+  englishField.className = "reading-field english-field";
+  const englishLabel = document.createElement("span");
+  englishLabel.className = "field-label";
+  englishLabel.textContent = "English";
+  const english = document.createElement("span");
+  english.className = "english-gloss";
+  english.textContent = entry.english || " ";
+  englishField.append(englishLabel, english);
+
   const actions = document.createElement("div");
   actions.className = "reading-actions";
 
@@ -789,7 +802,7 @@ function renderReading(entry) {
   });
 
   actions.append(source, playButton, copyButton);
-  wrapper.append(hangulField, lomariField, actions);
+  wrapper.append(hangulField, lomariField, englishField, actions);
   return wrapper;
 }
 
@@ -808,8 +821,8 @@ function renderResults() {
     title.textContent = rawQuery ? "No matching entries yet" : "Start with a search";
     const note = document.createElement("span");
     note.textContent = rawQuery
-      ? "Try Hanri, Tangliengim Hangul, or plain Lomari without tone marks."
-      : "Search by Chinese characters, Tangliengim Hangul, or Lomari.";
+      ? "Try Hanri, Tangliengim Hangul, Lomari, or English meanings."
+      : "Search by Chinese characters, Tangliengim Hangul, Lomari, or English.";
     empty.append(title, note);
     results.append(empty);
     resultSummary.textContent = rawQuery ? "0 results" : "No entries";

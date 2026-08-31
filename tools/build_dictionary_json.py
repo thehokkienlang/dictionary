@@ -206,6 +206,7 @@ def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> d
             hanri = str(row.get("hanri") or "").strip()
             priority_text = str(row.get("priority") or "").strip()
             corrected_raw = str(row.get("corrected") or "").strip()
+            english = str(row.get("english") or "").strip()
 
             if not raw_reading and not hanri and not corrected_raw:
                 counts["blank_rows"] += 1
@@ -246,6 +247,8 @@ def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> d
                 "readingBase": reading_base,
                 "lomari": lomari,
                 "lomariKey": normalize_for_search(lomari),
+                "english": english,
+                "englishKey": normalize_for_search(english),
                 "audio": audio,
                 "priority": priority,
                 "raw": {
@@ -253,6 +256,7 @@ def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> d
                     "hanri": hanri,
                     "priority": priority_text,
                     "corrected": corrected_raw,
+                    "english": english,
                 },
             }
             if corrected:
@@ -305,7 +309,7 @@ def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> d
         "source": str(tsv_path.relative_to(REPO_ROOT)).replace("\\", "/"),
         "sourceBytes": len(source_bytes),
         "sourceSha256": file_sha256(tsv_path),
-        "columns": ["reading", "hanri", "priority", "corrected"],
+        "columns": ["reading", "hanri", "priority", "corrected", "english"],
         "sort": "priority, row, reading, hanri",
         "counts": dict(sorted(counts.items())),
         "skippedRows": skipped_rows,
