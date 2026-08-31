@@ -100,6 +100,20 @@ h1 {
   font-weight: 700;
 }
 
+.input-mode-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.input-mode-prefix {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .input-modes {
   display: flex;
   flex-wrap: wrap;
@@ -506,6 +520,12 @@ h1 {
   }
 
   .input-modes {
+    justify-content: flex-start;
+  }
+
+  .input-mode-group {
+    align-items: flex-start;
+    flex-direction: column;
     justify-content: flex-start;
   }
 
