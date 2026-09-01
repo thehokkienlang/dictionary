@@ -503,7 +503,7 @@ function renderEntryHeadword(group) {
   if (group.kind === "hangul_override") {
     const hangul = document.createElement("span");
     hangul.className = "entry-headword-hangul";
-    hangul.append(renderInlineUpperToneReading(primaryReading));
+    hangul.append(renderToneMarkedReading(primaryReading));
     fragment.append(hangul);
     return fragment;
   }
