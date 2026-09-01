@@ -8,8 +8,8 @@
       name="description"
       content="Search Hanri, Tangliengim Hangul, and Lomari pronunciations from the Hokkien Tangliengim dictionary data."
     >
-    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-dropdown" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260901-dropdown">
+    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-annotated" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=20260901-annotated">
   </head>
   <body>
     <header class="app-header">
@@ -30,8 +30,8 @@
           <div class="input-mode-group">
             <label class="input-mode-prefix" for="inputModeSelect">Input:</label>
             <select id="inputModeSelect" class="input-mode-select" aria-label="Input mode">
+              <option value="lomari" selected>Lomari / English</option>
               <option value="hanri-hangul">Hanri + Hangul</option>
-              <option value="lomari">Lomari</option>
             </select>
           </div>
         </div>
@@ -73,7 +73,7 @@
       </article>
     </template>
 
-    <script src="web-hangul-ime.js?v=20260901-dropdown"></script>
-    <script src="app.js?v=20260901-dropdown"></script>
+    <script src="web-hangul-ime.js?v=20260901-annotated"></script>
+    <script src="app.js?v=20260901-annotated"></script>
   </body>
 </html>

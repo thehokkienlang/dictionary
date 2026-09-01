@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-dropdown";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-annotated";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
 const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
@@ -6,7 +6,7 @@ const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
 const state = {
   entries: [],
   groups: [],
-  inputMode: "hanri-hangul",
+  inputMode: "lomari",
   loaded: false,
   readingCandidates: new Map(),
 };
@@ -41,6 +41,23 @@ const HANGUL_TONE_MARKS = {
   5: "ˍ",
   "ˉ": "ˍ",
   "ˍ": "ˍ",
+};
+
+const UPPER_HANGUL_TONE_MARKS = {
+  1: "ˆ",
+  "ˆ": "ˆ",
+  "ꞈ": "ˆ",
+  2: "ˋ",
+  "ˋ": "ˋ",
+  "`": "ˋ",
+  "ˎ": "ˋ",
+  3: "",
+  4: "ˊ",
+  "ˊ": "ˊ",
+  "ˏ": "ˊ",
+  5: "ˉ",
+  "ˉ": "ˉ",
+  "ˍ": "ˉ",
 };
 
 const HANGUL_TONE_CHARS = new Set([...Object.keys(HANGUL_TONE_MARKS), "3"]);
@@ -389,6 +406,34 @@ function renderToneMarkedReading(reading) {
   return fragment;
 }
 
+function renderInlineUpperToneReading(reading) {
+  const fragment = document.createDocumentFragment();
+  const text = String(reading || "");
+  let index = 0;
+
+  while (index < text.length) {
+    const unit = readingUnitAt(text, index);
+    if (!unit) break;
+
+    const tone = text[unit.end];
+    fragment.append(displayTextNode(unit.text));
+    if (unit.canCarryTone && isToneMark(tone)) {
+      const mark = UPPER_HANGUL_TONE_MARKS[tone] || "";
+      if (mark) {
+        const toneNode = document.createElement("span");
+        toneNode.className = "inline-upper-tone";
+        toneNode.textContent = mark;
+        fragment.append(toneNode);
+      }
+      index = unit.end + 1;
+    } else {
+      index = unit.end;
+    }
+  }
+
+  return fragment;
+}
+
 function copyText(text) {
   if (navigator.clipboard?.writeText) {
     return navigator.clipboard.writeText(text);
@@ -724,26 +769,32 @@ function renderReading(entry) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading";
 
-  const hangulField = document.createElement("div");
-  hangulField.className = "reading-field";
-  const hangulLabel = document.createElement("span");
-  hangulLabel.className = "field-label";
-  hangulLabel.textContent = "Hangul";
-  const hangul = document.createElement("span");
-  hangul.className = "hangul";
-  hangul.append(renderToneMarkedReading(entry.reading));
-  hangul.title = entry.reading;
-  hangulField.append(hangulLabel, hangul);
+  const pronunciation = document.createElement("div");
+  pronunciation.className = "reading-pronunciation";
 
-  const lomariField = document.createElement("div");
-  lomariField.className = "reading-field";
-  const lomariLabel = document.createElement("span");
-  lomariLabel.className = "field-label";
-  lomariLabel.textContent = "Lomari";
+  if (entry.kind === "hangul_override") {
+    const hangulHeadword = document.createElement("span");
+    hangulHeadword.className = "reading-hanri reading-hanri-hangul";
+    hangulHeadword.append(renderInlineUpperToneReading(entry.reading));
+    hangulHeadword.title = entry.reading;
+    pronunciation.append(hangulHeadword);
+  } else {
+    const ruby = document.createElement("ruby");
+    ruby.className = "reading-hanri-ruby";
+    const base = document.createElement("span");
+    base.className = "reading-hanri";
+    base.append(displayTextNode(entry.hanri || entry.reading));
+    const rt = document.createElement("rt");
+    rt.className = "reading-hangul-rt";
+    rt.append(renderInlineUpperToneReading(entry.reading));
+    ruby.append(base, rt);
+    pronunciation.append(ruby);
+  }
+
   const lomari = document.createElement("span");
   lomari.className = "lomari";
   lomari.textContent = entry.lomari || " ";
-  lomariField.append(lomariLabel, lomari);
+  pronunciation.append(lomari);
 
   const englishField = document.createElement("div");
   englishField.className = "reading-field english-field";
@@ -806,7 +857,7 @@ function renderReading(entry) {
   });
 
   actions.append(source, playButton, copyButton);
-  wrapper.append(hangulField, lomariField, englishField, actions);
+  wrapper.append(pronunciation, englishField, actions);
   return wrapper;
 }
 
@@ -1007,4 +1058,4 @@ if (quickSearch) {
 }
 
 loadDictionary();
-setInputMode("hanri-hangul");
+setInputMode("lomari");
