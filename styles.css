@@ -365,6 +365,14 @@ h1 {
   text-align: center;
 }
 
+.hangul-reading-unit {
+  display: inline-block;
+  min-width: 1em;
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: 0;
+}
+
 .entry-headword-hangul {
   font-family: "Noto Sans KR", "Noto Sans CJK KR", "Noto Sans", sans-serif;
 }

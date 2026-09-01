@@ -471,7 +471,14 @@ function renderInlineUpperToneReading(reading) {
     if (!unit) break;
 
     const tone = text[unit.end];
-    fragment.append(displayTextNode(unit.text));
+    if (unit.canCarryTone) {
+      const unitNode = document.createElement("span");
+      unitNode.className = "hangul-reading-unit";
+      unitNode.textContent = unit.text;
+      fragment.append(unitNode);
+    } else {
+      fragment.append(displayTextNode(unit.text));
+    }
     if (unit.canCarryTone && isToneMark(tone)) {
       const mark = UPPER_HANGUL_TONE_MARKS[tone] || "";
       if (mark) {
