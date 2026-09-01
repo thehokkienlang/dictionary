@@ -134,7 +134,14 @@ h1 {
 
 .search-input::placeholder {
   color: #8390a2;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 1.08rem;
   font-style: italic;
+}
+
+.search-input.hangul-ime-active::placeholder {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 1.08rem;
 }
 
 .icon-button {
