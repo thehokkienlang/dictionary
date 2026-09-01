@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-annotated";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-nasal-toggle";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
 const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
@@ -18,7 +18,7 @@ const dataStatus = document.querySelector("#dataStatus");
 const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
 const quickSearch = document.querySelector("#quickSearch");
-const inputModeSelect = document.querySelector("#inputModeSelect");
+const hangulKeyboardToggle = document.querySelector("#hangulKeyboardToggle");
 const imeCandidates = document.querySelector("#imeCandidates");
 const hangulComposer = new TangliengimHangulIme.Composer();
 let internalSearchUpdate = false;
@@ -71,6 +71,49 @@ function normalizeText(value) {
     .toLowerCase();
 }
 
+function normalizeNasalAlias(value, nasalMarker) {
+  let output = "";
+  let canMarkPrevious = false;
+  for (const char of [...String(value || "").normalize("NFKD").toLowerCase()]) {
+    if (char === "\u0330" || char === "~") {
+      if (canMarkPrevious && !output.endsWith(nasalMarker)) {
+        output += nasalMarker;
+      }
+    } else if (/[\u0300-\u036f]/u.test(char)) {
+      continue;
+    } else if (/[\p{Letter}\p{Number}\u1100-\u11FF\u3130-\u318F\u3400-\u4DBF\u4E00-\u9FFF\u{20000}-\u{2EBEF}]/u.test(char)) {
+      output += char;
+      canMarkPrevious = true;
+    } else {
+      canMarkPrevious = false;
+    }
+  }
+  return output;
+}
+
+function normalizeLomariSearchAliases(value) {
+  const aliases = new Set([
+    normalizeText(value),
+    normalizeNasalAlias(value, "l"),
+    normalizeNasalAlias(value, "~"),
+  ].filter(Boolean));
+  return [...aliases].join(" ");
+}
+
+function queryVariants(rawQuery) {
+  const variants = new Set([
+    normalizeText(rawQuery),
+    normalizeNasalAlias(rawQuery, "l"),
+    normalizeNasalAlias(rawQuery, "~"),
+  ].filter(Boolean));
+
+  if (String(rawQuery || "").includes("~")) {
+    variants.delete(normalizeText(rawQuery));
+  }
+
+  return [...variants];
+}
+
 function visibleKind(kind) {
   const names = {
     plain_hanri: "Hanri",
@@ -102,6 +145,7 @@ function groupEntries(entries) {
           reading: "",
           readingBase: "",
           lomari: "",
+          lomariAliases: "",
           english: "",
           all: "",
         },
@@ -122,12 +166,14 @@ function groupEntries(entries) {
     group.search.reading = normalizeText(group.readings.map((item) => item.reading).join(" "));
     group.search.readingBase = normalizeText(group.readings.map((item) => item.readingBase).join(" "));
     group.search.lomari = normalizeText(group.readings.map((item) => item.lomari).join(" "));
+    group.search.lomariAliases = normalizeLomariSearchAliases(group.readings.map((item) => item.lomari).join(" "));
     group.search.english = normalizeText(group.readings.map((item) => item.english || "").join(" "));
     group.search.all = [
       group.search.hanri,
       group.search.reading,
       group.search.readingBase,
       group.search.lomari,
+      group.search.lomariAliases,
       group.search.english,
       normalizeText(group.readings.map((item) => item.raw?.reading || "").join(" ")),
     ].join(" ");
@@ -136,8 +182,16 @@ function groupEntries(entries) {
   return groups.sort((a, b) => a.priority - b.priority || a.row - b.row || a.hanri.localeCompare(b.hanri));
 }
 
-function scoreGroup(group, query, mode) {
-  if (!query) {
+function scoreField(value, query, boost) {
+  if (!value) return 0;
+  if (value === query) return 100 + boost;
+  if (value.startsWith(query)) return 80 + boost;
+  if (value.includes(query)) return 55 + boost;
+  return 0;
+}
+
+function scoreGroup(group, queries, mode) {
+  if (!queries.length) {
     return group.kind === "plain_hanri" ? 1 : 0;
   }
 
@@ -150,12 +204,13 @@ function scoreGroup(group, query, mode) {
   ];
 
   let best = 0;
-  for (const field of fields) {
-    const value = group.search[field.name] || "";
-    if (!value) continue;
-    if (value === query) best = Math.max(best, 100 + field.boost);
-    else if (value.startsWith(query)) best = Math.max(best, 80 + field.boost);
-    else if (value.includes(query)) best = Math.max(best, 55 + field.boost);
+  for (const query of queries) {
+    for (const field of fields) {
+      const value = field.name === "lomari"
+        ? `${group.search.lomari || ""} ${group.search.lomariAliases || ""}`.trim()
+        : group.search[field.name] || "";
+      best = Math.max(best, scoreField(value, query, field.boost));
+    }
   }
 
   return best;
@@ -163,11 +218,11 @@ function scoreGroup(group, query, mode) {
 
 function searchGroups() {
   const rawQuery = searchInput.value.trim();
-  const query = normalizeText(rawQuery);
-  const limit = query ? MAX_SEARCH_RESULTS : MAX_INITIAL_RESULTS;
+  const queries = queryVariants(rawQuery);
+  const limit = queries.length ? MAX_SEARCH_RESULTS : MAX_INITIAL_RESULTS;
 
   const matches = state.groups
-    .map((group) => ({ group, score: scoreGroup(group, query, state.inputMode) }))
+    .map((group) => ({ group, score: scoreGroup(group, queries, state.inputMode) }))
     .filter((item) => item.score > 0)
     .sort((a, b) =>
       b.score - a.score ||
@@ -912,8 +967,8 @@ function renderResults() {
 
 function setInputMode(mode) {
   state.inputMode = mode === "lomari" ? "lomari" : "hanri-hangul";
-  if (inputModeSelect) {
-    inputModeSelect.value = state.inputMode;
+  if (hangulKeyboardToggle) {
+    hangulKeyboardToggle.setAttribute("aria-pressed", String(state.inputMode === "hanri-hangul"));
   }
   searchInput.placeholder = "Search Hanri, Hangul, Lomari, or English...";
   searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
@@ -1040,8 +1095,8 @@ clearButton.addEventListener("click", () => {
   searchInput.focus();
   renderResults();
 });
-inputModeSelect?.addEventListener("change", () => {
-  setInputMode(inputModeSelect.value);
+hangulKeyboardToggle?.addEventListener("click", () => {
+  setInputMode(state.inputMode === "hanri-hangul" ? "lomari" : "hanri-hangul");
   searchInput.focus();
 });
 
