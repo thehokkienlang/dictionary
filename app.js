@@ -434,6 +434,31 @@ function renderInlineUpperToneReading(reading) {
   return fragment;
 }
 
+function renderEntryHeadword(group) {
+  const fragment = document.createDocumentFragment();
+  const primaryReading = group.readings[0]?.reading || group.hanri || "";
+
+  if (group.kind === "hangul_override") {
+    const hangul = document.createElement("span");
+    hangul.className = "entry-headword-hangul";
+    hangul.append(renderInlineUpperToneReading(primaryReading));
+    fragment.append(hangul);
+    return fragment;
+  }
+
+  const ruby = document.createElement("ruby");
+  ruby.className = "entry-headword-ruby";
+  const base = document.createElement("span");
+  base.className = "entry-headword-base";
+  base.append(displayTextNode(group.hanri));
+  const rt = document.createElement("rt");
+  rt.className = "entry-headword-reading";
+  rt.append(renderInlineUpperToneReading(primaryReading));
+  ruby.append(base, rt);
+  fragment.append(ruby);
+  return fragment;
+}
+
 function copyText(text) {
   if (navigator.clipboard?.writeText) {
     return navigator.clipboard.writeText(text);
@@ -769,32 +794,15 @@ function renderReading(entry) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading";
 
-  const pronunciation = document.createElement("div");
-  pronunciation.className = "reading-pronunciation";
-
-  if (entry.kind === "hangul_override") {
-    const hangulHeadword = document.createElement("span");
-    hangulHeadword.className = "reading-hanri reading-hanri-hangul";
-    hangulHeadword.append(renderInlineUpperToneReading(entry.reading));
-    hangulHeadword.title = entry.reading;
-    pronunciation.append(hangulHeadword);
-  } else {
-    const ruby = document.createElement("ruby");
-    ruby.className = "reading-hanri-ruby";
-    const base = document.createElement("span");
-    base.className = "reading-hanri";
-    base.append(displayTextNode(entry.hanri || entry.reading));
-    const rt = document.createElement("rt");
-    rt.className = "reading-hangul-rt";
-    rt.append(renderInlineUpperToneReading(entry.reading));
-    ruby.append(base, rt);
-    pronunciation.append(ruby);
-  }
-
+  const lomariField = document.createElement("div");
+  lomariField.className = "reading-field";
+  const lomariLabel = document.createElement("span");
+  lomariLabel.className = "field-label";
+  lomariLabel.textContent = "Lomari";
   const lomari = document.createElement("span");
   lomari.className = "lomari";
   lomari.textContent = entry.lomari || " ";
-  pronunciation.append(lomari);
+  lomariField.append(lomariLabel, lomari);
 
   const englishField = document.createElement("div");
   englishField.className = "reading-field english-field";
@@ -808,10 +816,6 @@ function renderReading(entry) {
 
   const actions = document.createElement("div");
   actions.className = "reading-actions";
-
-  const source = document.createElement("span");
-  source.className = "source-row";
-  source.title = `TSV row ${entry.row}`;
 
   const audioSegments = normalizeAudioSegments(entry.audio);
   const missingAudio = entry.audio?.missing || [];
@@ -856,8 +860,8 @@ function renderReading(entry) {
     }
   });
 
-  actions.append(source, playButton, copyButton);
-  wrapper.append(pronunciation, englishField, actions);
+  actions.append(playButton, copyButton);
+  wrapper.append(lomariField, englishField, actions);
   return wrapper;
 }
 
@@ -887,7 +891,7 @@ function renderResults() {
   for (const group of shown) {
     const node = template.content.firstElementChild.cloneNode(true);
     const hanri = node.querySelector(".hanri");
-    hanri.replaceChildren(renderToneMarkedReading(group.hanri));
+    hanri.replaceChildren(renderEntryHeadword(group));
     node.querySelector(".entry-meta").textContent = `${visibleKind(group.kind)} · ${group.readings.length} reading${group.readings.length === 1 ? "" : "s"}`;
     const readings = node.querySelector(".readings");
     group.readings.slice(0, 8).forEach((entry) => readings.append(renderReading(entry)));
