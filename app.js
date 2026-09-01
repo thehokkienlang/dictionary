@@ -129,19 +129,26 @@ function searchableEntry(entry) {
   return entry.active && entry.kind !== "numeric_override";
 }
 
+function groupKeyForEntry(entry) {
+  const headword = entry.hanri || entry.reading;
+  const reading = normalizeText(entry.readingBase || entry.reading || headword);
+  return `${headword}\u0000${reading}`;
+}
+
 function groupEntries(entries) {
-  const byHanri = new Map();
+  const byHeadwordReading = new Map();
   for (const entry of entries.filter(searchableEntry)) {
-    const key = entry.hanri || entry.reading;
-    if (!byHanri.has(key)) {
-      byHanri.set(key, {
-        hanri: key,
+    const headword = entry.hanri || entry.reading;
+    const key = groupKeyForEntry(entry);
+    if (!byHeadwordReading.has(key)) {
+      byHeadwordReading.set(key, {
+        hanri: headword,
         kind: entry.kind,
         priority: entry.priority,
         row: entry.row,
         readings: [],
         search: {
-          hanri: normalizeText(key),
+          hanri: normalizeText(headword),
           reading: "",
           readingBase: "",
           lomari: "",
@@ -152,13 +159,13 @@ function groupEntries(entries) {
       });
     }
 
-    const group = byHanri.get(key);
+    const group = byHeadwordReading.get(key);
     group.priority = Math.min(group.priority, entry.priority);
     group.row = Math.min(group.row, entry.row);
     group.readings.push(entry);
   }
 
-  const groups = [...byHanri.values()];
+  const groups = [...byHeadwordReading.values()];
   for (const group of groups) {
     group.readings.sort((a, b) =>
       a.priority - b.priority || a.row - b.row || a.reading.localeCompare(b.reading)
