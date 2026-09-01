@@ -2,44 +2,44 @@ reading	hanri	priority	corrected	english
 # implicit-tone-overrides (single Hangul-only hanri rows used when the typed form has no tone mark)				
 갗	갗	1		and
 뎋	뎋	1		
-캏	캏	1		
+캏	캏	1		more; even more
 릐2	릐ˋ	1		you
 꽈2	꽈ˋ	1		I; me
 이5	이ˉ	1		he; she; they
-꾼2	꾼ˋ	1		
-꽌2	꽌ˋ	1		
+꾼2	꾼ˋ	1		I; my; we (exclusive of listener)
+꽌2	꽌ˋ	1		I; my; we (exclusive of listener)
 란2	란ˋ	1		we (inclusive of listener)
-린2	린ˋ	1		
-인5	인ˉ	1		
+린2	린ˋ	1		you; your
+인5	인ˉ	1		they, their
 아5	아ˉ	1		
-곻	곻	1		
+곻	곻	1		again
 낫2	낫ˋ	1		
-렁2	렁ˋ	1		
-빼2	빼ˋ	1		
-뻐2	뻐ˋ	1		
+렁2	렁ˋ	1		all
+빼2	빼ˋ	1		bad
+뻐2	뻐ˋ	1		wife
 뽀4	뽀ˊ	1		not
 뾔5	뾔ˉ	1		won't; will not
-쉬2	쉬ˋ	2		
-시5	시ˉ	1		
-허5	허ˉ	1		
-짖	짖	1		
-쟟	쟟	1		
-쟈1	쟈ˆ	1		
-힏	힏	1		
-햐1	햐ˆ	1		
-애	애	1		
-매	매	1		
-얓	얓	1		
-감2	감ˋ	1		
-가2	가ˋ	1		
-제1	제ˆ	1		
-쟣	쟣	1		
-에당	에당	1		
+쉬2	쉬ˋ	2		nice
+시5	시ˉ	1		is
+허5	허ˉ	1		give
+짖	짖	1		this
+쟟	쟟	1		this; so
+쟈1	쟈ˆ	1		here
+힏	힏	1		that
+햐1	햐ˆ	1		there
+애	애	1		should; want
+매	매	1		shouldn't; don't want
+얓	얓	1		still; yet
+감2	감ˋ	1		(question marker)
+가2	가ˋ	1		to the extent
+제1	제ˆ	1		this
+쟣	쟣	1		then
+에당	에당	1		can; be able to
 뾔당	뾔당	1		cannot; will not be able to
 렁1정2	렁ˆ總	1		total; general; always
-안1니1	안ˆ니ˆ	1		
-안1네1	안ˆ네ˆ	1		
-쟟1니5	쟟ˆ니ˉ	1		
+안1니1	안ˆ니ˆ	1		like this; like that
+안1네1	안ˆ네ˆ	1		like this; like that
+쟟1니5	쟟ˆ니ˉ	1		this; so
 햫	햫	1		
 햫1니5	햫ˆ니ˉ	1		
 헤1	헤ˆ	1		
@@ -118,7 +118,7 @@ reading	hanri	priority	corrected	english
 게5보4	家婆	1		to be busybody
 게5ᄋᅷ5	家後	1		wife
 경4	強	1		strong
-경5	共	1		together; with
+경5	共	1		together; with; communist
 곈5치4	堅持	1		persevere
 곋1훈1	結婚	1		to get married
 곙1	經	1		scripture; classic; pass through
@@ -281,7 +281,7 @@ reading	hanri	priority	corrected	english
 뎡5걱	中國	1		China
 뎡5걱1랑4	中國人	1		Chinese person
 뎡5산1	中山	1		Zhongshan; Sun Yat-sen
-뎡5옿1	中學	1		middle school
+뎡5옿1	中學	1		secondary school; middle school
 뎡5화4	中華	1		Chinese; China
 뎡신1	重新	1		again; anew
 뎡ᄋᆤ	重要	1		important
@@ -523,7 +523,7 @@ reading	hanri	priority	corrected	english
 빻1초	肉脞	1		minced meat
 빻1초2미5	肉脞麵	1		minced meat noodles
 빻1테2	肉體	1		body; flesh
-뻑뎩1	目的	1		purpose
+뻑뎩1	目的	1		purpose; motive
 뻥4	茫	1		hazy; confused
 뻬2	馬	1		horse
 뻬4	迷	1		lost; fascinated
@@ -533,7 +533,7 @@ reading	hanri	priority	corrected	english
 뼨2	免	1		do not need; exempt
 뼹4	明	1		bright; clear
 뼹뼹4	明明	1		clearly; obviously
-뽀얄2	뽀影	1		not have a shadow; not be seen
+뽀얄2	뽀影	1		not real; not legitimate
 뽀ᄋᆤ2긴2	뽀要緊	1		not important; not urgent
 뽀찹	뽀插	1		do not insert; not inserted
 뾔1표	買票	1		buy a ticket
@@ -555,8 +555,8 @@ reading	hanri	priority	corrected	english
 삐1세2개	美世界	1		Beauty World
 삐1훈1궤2	米粉粿	1		bee hoon kueh
 삐1훈1틍1	米粉湯	1		rice vermicelli soup
-삐1훈2	米粉	1		rice vermicelli
-삐2	米	1		rice
+삐1훈2	米粉	1		bee hoon; rice vermicelli
+삐2	米	1		uncooked rice
 삐2	美	2		beautiful; America
 삐래4	未來	1		future
 삔4	民	2		people
@@ -605,7 +605,7 @@ reading	hanri	priority	corrected	english
 셩5신	相信	1		believe
 셩5훈4	傷痕	1		scar; wound mark
 셩안1	翔安	1		peace; safe
-셱	色	1		color
+셱	色	1		colour
 셱1	熟	1		ripe; familiar; cooked
 셱1띧1	昔日	1		former days
 셱새5	熟似	1		know; be acquainted with
@@ -621,8 +621,8 @@ reading	hanri	priority	corrected	english
 솰	傘	2		umbrella
 솰	線	1		line; thread
 솰1	山	1		mountain
-솰2ᄐᅷ4	汕頭	1		Shantou
-솰5구1	山龜	1		hill tortoise
+솰2ᄐᅷ4	汕頭	1		Shantou (Swatow)
+솰5구1	山龜	1		bumpkin
 솰5뎽2	山頂	1		mountaintop
 쇠	細	1		small; fine
 쇠2샬1	細聲	1		soft voice; quietly
@@ -631,7 +631,7 @@ reading	hanri	priority	corrected	english
 쇼1디5	小弟	1		younger brother
 쇼1뭬5	小妹	1		younger sister
 쇼1뻬5	小妹	1		younger sister
-쇼1옿1	小學	1		primary school
+쇼1옿1	小學	1		primary school; elementary school
 쇼2	小	1		small
 쇼5쇼1	燒燒	1		hot; warm
 숗	惜	1		cherish; pity
@@ -646,15 +646,15 @@ reading	hanri	priority	corrected	english
 순5뎡5산1	孫中山	1		Sun Yat-sen
 숟1	術	1		art; technique
 슈쥐2	泅水	1		swim
-슈키	受氣	1		be wronged; suffer anger
+슈키	受氣	1		angry
 슐5	想	1		think; want
 슐뼇	想欲	1		want to
 승	算	3		calculate; count; consider
 승1	酸	1		sour
 승2	耍	2		play
-승2ᄉᆤ	算數	1		arithmetic; count
-싀돠5	序大	1		seniority
-싀돠랑4	序大人	1		elder
+승2ᄉᆤ	算數	1		count
+싀돠5	序大	1		an elder
+싀돠랑4	序大人	1		an elder
 시	四	3		four
 시2	死	4		die; dead
 시2밯	四百	1		four hundred
@@ -677,11 +677,10 @@ reading	hanri	priority	corrected	english
 신5테2	身體	1		body
 싣	失	2		lose; mistake
 싣1	實	1		real; solid
-싣1지	失志	1		lose heart
+싣1지	失志	1		lose faith
 싣1킈	失去	1		lose
-실1	生	1		life; raw; give birth
+실1	生	1		life; give birth
 심1	心	1		heart; mind
-심1밓1	심ˆ밓ˆ	1		
 심5괄1	心肝	1		heart; darling
 괄1	肝	1		liver
 심5애	心愛	1		beloved
@@ -689,7 +688,7 @@ reading	hanri	priority	corrected	english
 ᄉᅷ	掃	1		sweep
 ᄉᆤ	數	2		number; count
 ᄉᆤ2	痟	1		crazy
-ᄉᆤ2럄5	數念	1		scold; nag
+ᄉᆤ2럄5	數念	1		to miss; to think of
 ᄉᆤ2롄4	少年	1		youth; young person
 아2	啞	1		mute; dumb
 아5겅1	阿公	1		grandfather
@@ -714,7 +713,7 @@ reading	hanri	priority	corrected	english
 앙4	紅	1		red
 앙구5궤2	紅龜粿	1		red tortoise cake
 앙데4	紅茶	1		black tea
-앙ᄃᅷ5	紅豆	1		red bean
+앙ᄃᅷ5	紅豆	1		red bean; azuki bean
 앙머4	紅毛	1		Western; Caucasian
 앙머교4	紅毛橋	1		Ang Mo Kio
 앙솰1	紅山	1		Bukit Merah
@@ -735,7 +734,6 @@ reading	hanri	priority	corrected	english
 어5벻1	烏白	1		wrongly; randomly
 어5벻겅2	烏白講	1		talk nonsense
 어5임1	烏陰	1		dark; gloomy
-어진2덩1	胡震東	1		Hu; foreign; shake; Zhen; east
 엉1수5	往事	1		past events
 엉1엉2	往往	1		often
 엉2	往	1		toward; past
@@ -745,7 +743,7 @@ reading	hanri	priority	corrected	english
 에4	个	1		individual; classifier
 에5	下	2		below; under; next
 에5	下	1		below; under; next
-에믕4	廈門	1		Xiamen
+에믕4	廈門	1		Xiamen (Amoy)
 에흥1	下昏	1		dusk; evening
 영1키	勇氣	1		courage
 영2	勇	2		brave
@@ -758,22 +756,22 @@ reading	hanri	priority	corrected	english
 옿1	學	1		study; learn
 완	怨	1		resent; complain
 완2키	怨氣	1		resentment
-완2탄	怨嘆	1		lament; complain
+완2탄	怨嘆	1		to sigh; to lament
 완탄1	雲吞	1		wonton
 완탄5미5	雲吞麵	1		wonton noodles
 왇람4	越南	1		Vietnam
 왇람랑4	越南人	1		Vietnamese person
 왈	晏	1		late
-왈1궤2	碗粿	1		bowl rice cake
+왈1궤2	碗粿	1		bowl rice cake; wa kueh
 왈2	碗	1		bowl
 왈2ᄀᅷ	晏到	1		arrive late
 왛1	活	1		live; alive
 외2	矮	1		short
 외4	鞋	1		shoe
 우5	譽	1		praise; reputation
-우시4	우時	1		time
-우얄2	우影	1		shadow; image
-우얄2’뽀4	우影’뽀ˊ	1		shadow; image
+우시4	우時	1		sometimes
+우얄2	우影	1		real; tangible
+우얄2’뽀4	우影’뽀ˊ	1		is it for real
 운5	運	1		luck; transport
 운덩5	運動	1		exercise; sport
 욷1줃	鬱卒	1		depressed; frustrated
@@ -788,11 +786,11 @@ reading	hanri	priority	corrected	english
 유ᄀᅷ	油垢	1		greasy dirt
 유ᄀᅷ2ᄀᅷ	油垢垢	1		very greasy
 유ᄀᅷ2삐5	油垢味	1		greasy taste
-유디4	油池	1		oil pond
+유디4	油池	1		Yew Tee
 율4	羊	1		goat; sheep
 율4	洋	2		ocean; foreign
-음둏1	음著	1		hit; correct; wear
-음시5	음시ˉ	1		
+음둏1	음著	1		not right; wrong
+음시5	음시ˉ	1		is not
 응4	黃	1		yellow; Huang
 이	意	2		meaning; intention
 이1곙1	已經	1		already
@@ -817,7 +815,7 @@ reading	hanri	priority	corrected	english
 ᄋᆤ2긴2	要緊	1		important; urgent
 자1키2	早起	1		morning; get up early
 자2	早	1		early
-자5뻐2	자ˉ뻐ˋ	1		
+자5뻐2	자ˉ뻐ˋ	1		woman
 잔1	曾	1		once; Zeng
 잔4	層	1		layer; floor
 잗	節	1		festival; section
@@ -834,8 +832,8 @@ reading	hanri	priority	corrected	english
 쟣1	食	1		eat
 쟣미5	食麵	1		eat noodles
 쟣바2	食飽	1		eat until full
-쟣바2’ᄅᆤ2	食飽’ᄅᆤˋ	1		eat until full
-쟣바2’쀄	食飽’쀄	1		eat until full
+쟣바2’ᄅᆤ2	食飽’ᄅᆤˋ	1		eat until full; satiated
+쟣바2’쀄	食飽’쀄	1		are (you) full? (used as a greeting)
 쟣븡5	食飯	1		eat; have a meal
 쟣새2	食屎	1		eat shit
 쟣처	食醋	1		be jealous
@@ -865,8 +863,8 @@ reading	hanri	priority	corrected	english
 좌1띠5	紙字	1		written words
 좌2	紙	1		paper
 좌4	蛇	1		snake
-좐쟝1	泉漳	1		Quanzhou and Zhangzhou
-좐쟝5웨5	泉漳話	1		Quanzhou-Zhangzhou speech
+좐쟝1	泉漳	1		Quanzhou and Zhangzhou; Quanzhang
+좐쟝5웨5	泉漳話	1		Quanzhou-Zhangzhou speech; Hokkien
 좐쥬1	泉州	1		Quanzhou
 죄	做	2		do; make
 죄2딘5	做陣	1		together
@@ -924,37 +922,37 @@ reading	hanri	priority	corrected	english
 짇쳰5커1*	一千箍	1	짇촁5커1	one thousand dollars
 짇촁5커1	一千箍	1		one thousand dollars
 질4	錢	1		money
-짖1에4	짖ˆ个	1		individual; classifier
+짖1에4	짖ˆ个	1		this
 짛1	舌	1		tongue
-ᄌᅷ1킈	走去	1		go away
+ᄌᅷ1킈	走去	1		go
 ᄌᅷ2	走	1		run; go
-ᄌᆤ	照	1		according to; shine
+ᄌᆤ	照	1		according to
 ᄌᆤ2	鳥	2		bird
 ᄌᆤ2거	照顧	1		look after; care for
-ᄌᆤ2겅2	照講	1		speaking of which
+ᄌᆤ2겅2	照講	1		to say as it is
 ᄌᆤ2키1강1	照起工	1		as usual; according to work
 차1궤1ᄃᆤ4	炒粿條	1		fried kway teow
 차1븡5	炒飯	1		fried rice
-차1삐1훈2	炒米粉	1		fry; rice; flour; powder
+차1삐1훈2	炒米粉	1		fried bee hoon
 차2	炒	2		fry
 차2	吵	1		noisy; argue
-차5슈1	叉燒	1		hot; burn
+차5슈1	叉燒	1		char siew
 찹	插	1		insert
 채	菜	1		vegetable; dish
-채2치5	菜市	1		vegetable; dish; city
-채2ᄐᅷ궤2	菜頭粿	1		vegetable; dish; head; rice cake
-챠1	車	1		vehicle
-챠5잠5	車站	1		vehicle
-챠5ᄐᅷ4	車頭	1		vehicle; head
+채2치5	菜市	1		market; bazaar; Chai Chee
+채2ᄐᅷ궤2	菜頭粿	1		fried carrot cake
+챠1	車	1		car; vehicle
+챠5잠5	車站	1		station
+챠5ᄐᅷ4	車頭	1		station
 챨2	請	1		please; invite
-챻1챻	챻ˆ챻	1		
+챻1챻	챻ˆ챻	1		cha-cha
 처	醋	2		vinegar; jealousy
 처1	粗	1		coarse; rough
 처1	初	3		beginning; first
-처5러2	粗魯	1		rude; dull
+처5러2	粗魯	1		unruly
 체1	叉	1		fork; cross
-첼1	青	1		blue; green
-쳏	冊	1		book; volume
+첼1	青	1		green
+쳏	冊	1		book
 쳥1	沖	2		rush; rinse
 쳥1	衝	1		rush; collide
 쳰1	千	1		thousand
@@ -962,18 +960,18 @@ reading	hanri	priority	corrected	english
 촁1	千	1		thousand
 촁1	清	1		clear; pure
 촁5	穿	1		wear; pierce
-촁5초2	清楚	1		clear; pure; suffering
-촁5춘1	青春	1		blue; green
+촁5초2	清楚	1		to be clear
+촁5춘1	青春	1		youth
 촁5칠2	清醒	1		clear; pure; wake; sober
 촁5커1	千箍	1		thousand; dollar; ring
-촁5화4	清華	1		clear; pure; splendid; Chinese
-촁살1	穿衫	1		wear; pierce; shirt; clothes
+촁5화4	清華	1		Tsinghua
+촁살1	穿衫	1		wear clothes
 초	錯	1		wrong; mistake
-촤2추2강2	蔡厝港	1		house
+촤2추2강2	蔡厝港	1		Choa Chu Kang
 촨2	喘	1		pant; gasp
-최1	初	1		beginning; first
-최5읻	初一	1		one
-최5읻1잡꺼5	初一十五	1		one; ten; five
+최1	初	1		prefix for days 1 to 10 of a Chinese calendar month
+최5읻	初一	1		day 1 of a Chinese calendar month
+최5읻1잡꺼5	初一十五	1		days 1 and 15 of a Chinese calendar month
 쵸	笑	1		laugh; smile
 쵸2영4	笑容	1		laugh; smile; appearance; contain
 추	厝	1		house
@@ -983,72 +981,71 @@ reading	hanri	priority	corrected	english
 취2짛1	喙舌	1		tongue
 츄2	手	1		hand
 츌	唱	1		sing
-츌2과1	唱歌	1		song
+츌2과1	唱歌	1		sing song
 츼2	鼠	1		rat; mouse
 치5	市	1		city
-치뎔2	市長	2		city
-치듈2	市長	1		city
+치뎔2	市長	2		city mayor
+치듈2	市長	1		city mayor
 친1	親	1		relative; close
-친2채2	친ˋ채ˋ	1		
+친2채2	친ˋ채ˋ	1		anyhow
 친5애	親愛	1		relative; close; love; want
 친5츌5	親像	1		relative; close
 칟	七	1		seven
 칟1밯	七百	1		seven; hundred
 칟1잡1	七十	1		seven; ten
-칟1토4	칟ˆ토ˊ	1		
+칟1토4	칟ˆ토ˊ	1		to play; to have a good time
 칟1훈1	七分	1		seven; divide; minute; cent
-칠1	青	1		blue; green
-칠2’래	醒’래	1		
+칠1	青	1		green
+칠2’래	醒’래	1		wake up
 침1	深	1		deep
 ᄎᅷ2	草	1		grass
-ᄎᅷ2힐랑4	臭耳聾	1		ear; deaf
+ᄎᅷ2힐랑4	臭耳聾	1		deaf
 ᄎᆤ4	撨	1		adjust; arrange
 카1	跤	1		foot
-카2믕4	敲門	1		door
-카5닿싣데5	跤踏實地	1		step on; tread; real; solid; earth
-카5닿챠1	跤踏車	1		step on; tread; vehicle
-카5층1	尻川	1		buttocks; river
-카5ᄐᅷ우1	跤頭趺	1		head
-카5ᄐᅷ후1	跤頭趺	1		head
+카2믕4	敲門	1		to knock on a door
+카5닿싣데5	跤踏實地	1		to be realistic and reliable
+카5닿챠1	跤踏車	1		bicycle
+카5층1	尻川	1		buttocks
+카5ᄐᅷ우1	跤頭趺	1		knee
+카5ᄐᅷ후1	跤頭趺	1		knee
 캬5	騎	1		ride
 캬5	徛	1		stand
-커1	箍	1		dollar; ring
+커1	箍	1		dollar
 커2	苦	1		bitter; suffering
 코	靠	1		lean on; rely on
 코1롄4	可憐	1		pity; love
 코1비2	可比	1		compare
 코1숗	可惜	1		cherish; pity
-코1애	可愛	1		love; want
+코1애	可愛	1		cute; adorable
 코2	可	1		can; may
 콴2	款	1		type; style
 콸	看	1		look; watch
 쾌	快	1		fast; happy
-쾌2럭1	快樂	1		music
+쾌2럭1	快樂	1		happy
 쿠1	軀	1		body
 쿠1	區	1		area; district
-쿤’킈	睏’킈	1		sleep
+쿤’킈	睏’킈	1		fall asleep
 퀴	氣	2		air; energy
 퀼2왛1	快活	1		live; alive
 킈	去	1		go
 키	氣	1		air; energy
-키1ᄉᆤ2	起痟	1		rise; start; crazy
-키2	起	1		rise; start
-킨1	輕	1		light; easy
-킨5샬1	輕聲	1		sound; voice
-킨5코2	輕可	1		light; easy
+키1ᄉᆤ2	起痟	1		to be crazy
+키2	起	1		rise; start; build
+킨1	輕	1		light
+킨5샬1	輕聲	1		soft; low in volume
+킨5코2	輕可	1		alright
 킨5킨1	輕輕	1		light; easy
 ᄏᅷ	哭	1		cry
 ᄏᅷ2	口	1		mouth
-ᄏᅷ2베5	哭爸	1		cry; father
-ᄏᅷ2베ᄏᅷ2뿌2	哭爸哭母	1		mother
-ᄏᅷ2뿌2	哭母	1		mother
+ᄏᅷ2베5	哭爸	1		cry father; whine
+ᄏᅷ2베ᄏᅷ2뿌2	哭爸哭母	1		whine; complain
 탁1	讀	1		read; study
-탁주1	讀書	1		book
-탁쳏	讀冊	1		read; study; book; volume
+탁주1	讀書	1		read book; study
+탁쳏	讀冊	1		read book; study
 탕1	通	1		pass through; understand
 탕4	蟲	1		insect; worm
-태2걱	泰國	1		country
-태2걱1랑4	泰國人	1		country; person; people
+태2걱	泰國	1		Thailand
+태2걱1랑4	泰國人	1		Thai person
 턀1	聽	1		listen; hear
 터	兔	1		rabbit
 터	吐	2		spit; vomit
@@ -1056,7 +1053,7 @@ reading	hanri	priority	corrected	english
 테1꺔5	體驗	1		body; form; verify; experience
 테1령5	體諒	1		body; form; forgive; understand
 테2	體	1		body; form
-토흥4	桃園	1		peach; garden; park
+토흥4	桃園	1		Taoyuan
 툐1	挑	1		pick; carry
 툰1	吞	1		swallow
 틍1	湯	1		soup; hot water
@@ -1074,7 +1071,7 @@ reading	hanri	priority	corrected	english
 ᄐᅷ믕4	頭毛	1		head; hair; fur
 ᄐᅷ졩4	頭前	1		head; before; front
 ᄐᆤ	跳	1		jump
-ᄐᆤ’롷킈	跳’롷킈	1		
+ᄐᆤ’롷킈	跳’롷킈	1		jump down
 ᄐᆤ5강1	挑工	1		work
 팧	拍	1		hit; beat
 팧1뱔	拍拚	1		hit; beat; struggle; fight; work hard
@@ -1096,62 +1093,62 @@ reading	hanri	priority	corrected	english
 풰후1	皮膚	1		skin; leather
 핀2	品	1		goods; quality
 필5	鼻	1		nose
-필새2	鼻屎	1		feces
-필캉1	鼻空	1		nose; empty; air
+필새2	鼻屎	1		booger
+필캉1	鼻空	1		nostril
 ᄑᅷ	泡	1		soak; bubble
-ᄑᅷ2미5	泡麵	1		noodles
-ᄑᅷ2데4	泡茶	1		tea
-학솅1	學生	1		learn; study; life; give birth
-한걱	韓國	1		country
-한걱1랑4	韓國人	1		country; person; people
-해1셩5	海上	1		sea; above; on
-해1옝2	海湧	1		sea
-해1해2	海海	1		sea
-해1활5	海岸	1		sea
+ᄑᅷ2미5	泡麵	1		instant noodles
+ᄑᅷ2데4	泡茶	1		make tea
+학솅1	學生	1		student
+한걱	韓國	1		South Korea
+한걱1랑4	韓國人	1		South Korean
+해1셩5	海上	1		sea
+해1옝2	海湧	1		sea wave
+해1해2	海海	1		nothing out of the ordinary
+해1활5	海岸	1		sea coast
 해2	海	1		sea
 햘1	兄	1		elder brother
 햘5디5	兄弟	1		elder brother; younger brother
-햘5디지1뭬5	兄弟姊妹	1		elder brother; younger brother; elder sister; younger sister
-햘5디지1뻬5	兄弟姊妹	1		elder brother; younger brother; elder sister; younger sister
-햠1	薟	1		spicy; pungent
+햘5디지1뭬5	兄弟姊妹	1		siblings
+햘5디지1뻬5	兄弟姊妹	1		siblings
+햠1	薟	1		spicy
 햠4	嫌	1		dislike; suspect
-햠5죠1	薟椒	1		spicy; pungent; pepper
-향1키2	響起	1		rise; start
+햠5죠1	薟椒	1		chilli
+향1키2	響起	1		start (of a sound or music)
 향2	響	1		sound; echo
 허2	虎	3		tiger
 허5	雨	2		rain
 허5	護	1		protect
-허솰	雨傘	1		rain; umbrella
-허죠	護照	1		according to; shine
-헉1곈	福建	1		blessing; good fortune; build; establish
-헉1곈2랑4	福建人	1		person; people
-헉1곈2미5	福建麵	1		noodles
-헉1곈2웨5	福建話	1		speech; language
+허솰	雨傘	1		umbrella
+허죠	護照	1		passport
+헉1곈	福建	1		Fujian
+헉1곈2랑4	福建人	1		Hokkien person; Fujian person
+헉1곈2미5	福建麵	1		Hokkien mee
+헉1곈2웨5	福建話	1		Hokkien speech
 헝1	風	1		wind
-헝5허5	風雨	1		wind; rain
-헝5헝5우1우2	風風雨雨	1		wind; rain
-헝데	皇帝	1		emperor; royal
-형5강2	香港	1		fragrant; harbor; Hong Kong
+헝5허5	風雨	1		wind and rain
+헝5헝5우1우2	風風雨雨	1		wind and rain
+헝데	皇帝	1		emperor
+형5강2	香港	1		Hong Kong
 혠	獻	1		offer; present
 혱1	興	1		interest; prosper
 혱4	衡	3		balance; weigh
 혱5	幸	2		fortunate; happiness
 혱헉	幸福	1		fortunate; happiness; blessing; good fortune
-호1걀2	好囝	1		good; child
-호1운5	好運	1		good; luck; transport
-호1쟣1	好食	1		good; eat
+호1걀2	好囝	1		good kid
+호1운5	好運	1		good luck
+호1쟣1	好食	1		delicious
 호1호2	好好	1		good
 호2	好	1		good
-호4	和	3		and; with; harmony
+호4	和	3		harmony
 호4	河	4		river
 호5	號	2		number; call
 화4	華	1		splendid; Chinese
-화꾸2	華語	1		language
+화꾸2	華語	1		Mandarin Chinese
 환4	繁	2		complex; flourishing
 환4	煩	1		annoyed; troublesome
 환4	環	1		ring; surrounding
-환5꼥4	歡迎	1		happy; welcome
-환곙2	環境	1		border; situation
+환5꼥4	歡迎	1		welcome
+환곙2	環境	1		environment
 환로2	煩惱	1		annoyed; troublesome; trouble
 환화4	繁華	1		complex; flourishing; splendid; Chinese
 홛	法	1		law; method
@@ -1172,7 +1169,7 @@ reading	hanri	priority	corrected	english
 훈4	痕	5		mark; scar
 훈4	雲	7		cloud
 훈5	昏	6		dusk; dim
-훈림4	雲林	1		cloud; forest; surname
+훈림4	雲林	1		Yunlin
 훼	歲	3		year; age
 훼1	花	1		flower
 훼1챠1	火車	1		fire; vehicle
@@ -1180,28 +1177,28 @@ reading	hanri	priority	corrected	english
 훼4	回	4		return
 훼5흥4	花園	1		flower; garden; park
 훼ᄐᅷ4	回頭	1		return; head
-휘5기1	飛機	1		airplane
-휘왈1	惠安	1		peace; safe
+휘5기1	飛機	1		aeroplane; airplane
+휘왈1	惠安	1		Hui'an
 히2	喜	1		joy; like
 히5빵5	希望	1		hope; rare; look
-힏1에4	힏ˆ个	1		individual; classifier
+힏1에4	힏ˆ个	1		that
 힐5	耳	1		ear
 힐캉1	耳空	1		ear
-ᄒᅷ셀1	後生	1		after; behind; life; give birth
-ᄒᅷ실1	後生	1		after; behind; life; give birth
-ᄒᆤ2	曉	1		dawn; understand
-ᄒᆤ5배1	囂俳	1		noisy; arrogant; clowning; comedy
+ᄒᅷ셀1	後生	1		son
+ᄒᅷ실1	後生	1		son
+ᄒᆤ2	曉	1		understand
+ᄒᆤ5배1	囂俳	1		arrogant
 ᅙᅦ5	硬	1		hard
 ᅙᅵ5	硬	1		hard
-어5셱1	烏色	1		black; color
-ᄃᆤ걀5	條件	1		strip; classifier for long things
+어5셱1	烏色	1		black
+ᄃᆤ걀5	條件	1		strip
 관2	管	1		pipe; manage
 볜2과	變卦	1		change
-옌훈5	緣份	1		fate; connection; share; portion
+옌훈5	緣份	1		fate; connection
 좐4	全	1		whole; all
-콸2퐈	看破	1		look; watch
+콸2퐈	看破	1		to see through something
 히5솅1	犧牲	1		sacrifice; livestock
-턀	疼	1		pain; love
+턀	疼	1		pain; to love
 상	送	1		send; give
 완4	完	1		complete; finish
 완2훈5	怨恨	1		resent; complain
@@ -1215,10 +1212,10 @@ reading	hanri	priority	corrected	english
 훈5	恨	1		hate; regret
 괃1뎽5	決定	1		fixed; certain; decide
 등4	長	1		long; grow
-짇버5	一步	1		one; step
+짇버5	一步	1		one step
 허쥐2	雨水	1		rain; water
-악1담4	沃澹	1		water; fertile; calm; watery
-살5커	衫褲	1		shirt; clothes
+악1담4	沃澹	1		wet
+살5커	衫褲	1		clothes
 지2	只	1		only; just
 곙2가1	更加	1		more; again; add; increase
 곈5경4	堅強	1		strong
@@ -1226,51 +1223,51 @@ reading	hanri	priority	corrected	english
 커1처2	苦楚	1		bitter; suffering; clear
 곈5뎽5	堅定	1		fixed; certain; decide
 퐐5	伴	1		companion; accompany
-형2졘걀4	向前行	1		before; front; walk; go
+형2졘걀4	向前行	1		to strive; to move forward
 먀4	名	1		name; reputation
-춛1시	出世	1		world; generation
-호1먀5	好命	1		good; life; fate
-싣1배	失敗	1		lose; mistake
+춛1시	出世	1		to be born
+호1먀5	好命	1		good life
+싣1배	失敗	1		fail
 빤빤5	慢慢	1		slow
-운먀5	運命	1		luck; transport; life; fate
-지1ᄋᆤ	只要	1		important; want
-영심1	用心	2		use; heart; mind
-셓1	踅	1		turn around; wander
-하코	下課	1		below; under
-뮈1강1	每工	1		work
-심5래5	心內	1		heart; mind; inside
-챠5롄2	車輦	1		vehicle
+운먀5	運命	1		luck; life; fate
+지1ᄋᆤ	只要	1		as long as
+영심1	用心	2		to be mindful
+셓1	踅	1		wander
+하코	下課	1		after class
+뮈1강1	每工	1		every day
+심5래5	心內	1		in one's heart
+챠5롄2	車輦	1		wheels
 카5닿1	跤踏	1		step on; tread
-갸	寄	1		send; lodge
-츄뎽2	樹頂	1		top
-ᄌᆤ1아2	鳥仔	1		bird; diminutive suffix
-붇1시4	不時	1		time
-ᄐᅷ5턀1	偷聽	1		listen; hear
+갸	寄	1		send; deliver
+츄뎽2	樹頂	1		treetop
+ᄌᆤ1아2	鳥仔	1		little bird
+붇1시4	不時	1		from time to time
+ᄐᅷ5턀1	偷聽	1		eavedrop
 담4	談	1		talk; discuss
-롼애	戀愛	1		love; want
-역1훼5	約會	1		can; meeting
-심5쟐4	心情	2		heart; mind; feeling; affection
+롼애	戀愛	1		to be in love
+역1훼5	約會	1		date; meeting
+심5쟐4	心情	2		feeling
 킁	囥	1		hide; store away
-순졩4	純情	1		feeling; affection
-활5활5히1히2	歡歡喜喜	1		happy; welcome; joy; like
-기태5	期待	1		period; expect; wait; treat
-딜5삗1	甜蜜	1		sweet; honey
-주5삐5	滋味	1		nourish; flavor; taste
-참1	摻	1		mix in
+순졩4	純情	1		pure feelings
+활5활5히1히2	歡歡喜喜	1		happy; joy
+기태5	期待	1		anticipate
+딜5삗1	甜蜜	1		sweet
+주5삐5	滋味	1		flavour
+참1	摻	1		mix
 재5	在	1		exist; at
 아2	仔	1		diminutive suffix
 어5어1	烏烏	1		black
-꺟1	攑	1		raise; lift
-듸ᄐᅷ4	鋤頭	1		head
+꺟1	攑	1		lift; grab
+듸ᄐᅷ4	鋤頭	1		hoe
 굳1	掘	1		dig
 어5	芋	1		taro
-짇쀄2	一尾	1		one; tail; end
+짇쀄2	一尾	1		classifier for fish
 솬5류5거2	旋鰡鼓	1		turn; spin; mullet fish; drum
-진5쟐	真正	1		true; really; correct; proper
-추2삐5	趣味	1		interest; fun; taste; flavor
-쟐2	䭕	1		food; snack
-쇼5팧	相拍	1		mutual; appearance; hit; beat
-렁2퐈	挵破	1		hit; knock; break; broken
+진5쟐	真正	1		really
+추2삐5	趣味	1		interesting; fun
+쟐2	䭕	1		bland
+쇼5팧	相拍	1		fight
+렁2퐈	挵破	1		to break
 댤2	鼎	1		pot; cauldron
 렁	挵	1		hit; knock
 쟘쟘5	漸漸	1		gradually
@@ -1302,17 +1299,17 @@ reading	hanri	priority	corrected	english
 롷챠1	落車	1		fall; drop; vehicle
 루1켛	旅客	1		travel; guest; customer
 혠대	現代	1		present; appear; generation; replace
-짇덩	一棟	1		one
+짇덩	一棟	1		classifier for buildings
 츌5	像	1		image; resemble
 뀋뉴4	月娘	1		moon; month; mother; woman
 귀5미4	規暝	1		night
 쿤	睏	1		sleep
 롄4	連	1		connect; even
-훃1쿤	歇睏	1		sleep
-강콴2	仝款	1		type; style
-허셩1	互相	1		mutual; appearance
-이5와2	依倚	1		rely on; according to; lean on
-졩애	情愛	1		feeling; affection; love; want
+훃1쿤	歇睏	1		to rest
+강콴2	仝款	1		same; alike
+허셩1	互相	1		mutual
+이5와2	依倚	1		rely on; lean on
+졩애	情愛	1		feeling; affection; love
 준재5	存在	1		exist; keep; at
 감5꽌5	甘願	1		sweet; pleasant
 조2훼2	做伙	1		do; make
