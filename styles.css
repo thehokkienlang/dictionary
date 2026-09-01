@@ -79,6 +79,17 @@ h1 {
   margin: 22px auto 32px;
 }
 
+.construction-notice {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #f2d2a6;
+  border-radius: 7px;
+  background: #fff8ed;
+  color: #7c4a12;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
 .search-panel {
   background: var(--surface);
   border: 1px solid var(--line);
