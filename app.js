@@ -340,11 +340,21 @@ function renderImeCandidates() {
     number.textContent = String(index + 1);
     const hanri = document.createElement("span");
     hanri.className = "candidate-hanri";
-    hanri.textContent = candidate.entry.hanri;
+    if (candidate.entry.kind === "hangul_override") {
+      hanri.classList.add("candidate-hangul");
+      hanri.append(renderToneMarkedReading(candidate.entry.reading));
+    } else {
+      hanri.textContent = candidate.entry.hanri;
+    }
     const reading = document.createElement("span");
     reading.className = "candidate-reading";
-    reading.append(renderToneMarkedReading(candidate.entry.reading));
-    button.append(number, hanri, reading);
+    if (candidate.entry.kind !== "hangul_override") {
+      reading.append(renderToneMarkedReading(candidate.entry.reading));
+    }
+    button.append(number, hanri);
+    if (candidate.entry.kind !== "hangul_override") {
+      button.append(reading);
+    }
     button.addEventListener("mousedown", (event) => event.preventDefault());
     button.addEventListener("click", () => applyImeCandidate(candidate));
     imeCandidates.append(button);
@@ -1200,6 +1210,26 @@ function handleHanriHangulKeydown(event) {
   updateSearchFromComposer();
 }
 
+function handleHanriHangulBeforeInput(event) {
+  if (state.inputMode !== "hanri-hangul" || event.isComposing || !event.cancelable) return;
+
+  if (event.inputType === "insertText" && event.data) {
+    event.preventDefault();
+    syncComposerFromSearchInput();
+    replaceSelectionBeforeImeKey();
+    for (const char of [...event.data]) {
+      hangulComposer.processChar(char);
+    }
+    updateSearchFromComposer();
+  } else if (event.inputType === "deleteContentBackward") {
+    event.preventDefault();
+    syncComposerFromSearchInput();
+    replaceSelectionBeforeImeKey();
+    hangulComposer.backspace();
+    updateSearchFromComposer();
+  }
+}
+
 async function loadDictionary() {
   try {
     const response = await fetch(DATA_URL);
@@ -1225,6 +1255,7 @@ async function loadDictionary() {
   }
 }
 
+searchInput.addEventListener("beforeinput", handleHanriHangulBeforeInput);
 searchInput.addEventListener("keydown", handleHanriHangulKeydown);
 searchInput.addEventListener("input", () => {
   if (internalSearchUpdate) return;

@@ -283,6 +283,10 @@ h1 {
   white-space: nowrap;
 }
 
+.candidate-hangul {
+  font-family: "Noto Sans KR", "Noto Sans CJK KR", "Noto Sans", sans-serif;
+}
+
 .candidate-reading {
   color: var(--muted);
   font-family: "Noto Sans KR", "Noto Sans CJK KR", "Noto Sans", sans-serif;
