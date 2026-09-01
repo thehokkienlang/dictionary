@@ -123,6 +123,12 @@ h1 {
   outline: none;
 }
 
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .search-input.hangul-ime-active {
   font-family: "Noto Sans TC", "Noto Sans CJK TC", "Noto Sans KR", "Noto Sans CJK KR", "Noto Sans", sans-serif;
 }
