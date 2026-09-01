@@ -17,8 +17,8 @@ reading	hanri	priority	corrected	english
 렁2	렁ˋ	1		
 빼2	빼ˋ	1		
 뻐2	뻐ˋ	1		
-뽀4	뽀ˊ	1		
-뾔5	뾔ˉ	1		
+뽀4	뽀ˊ	1		not
+뾔5	뾔ˉ	1		won't; will not
 쉬2	쉬ˋ	2		
 시5	시ˉ	1		
 허5	허ˉ	1		
@@ -35,7 +35,7 @@ reading	hanri	priority	corrected	english
 제1	제ˆ	1		
 쟣	쟣	1		
 에당	에당	1		
-뾔당	뾔당	1		
+뾔당	뾔당	1		cannot; will not be able to
 렁1정2	렁ˆ總	1		total; general; always
 안1니1	안ˆ니ˆ	1		
 안1네1	안ˆ네ˆ	1		
@@ -60,7 +60,7 @@ reading	hanri	priority	corrected	english
 ’릐	’릐	1		
 ’ᄅᆤ2	’ᄅᆤ	1		
 ’ᄅᆤ2	’ᄅᆤˋ	2		
-’뽀4	’뽀ˊ	1		
+’뽀4	’뽀ˊ	1		not
 ’에	’에	1		
 ’이	’이	1		
 ’킈	’킈	1		
@@ -533,13 +533,13 @@ reading	hanri	priority	corrected	english
 뼨2	免	1		do not need; exempt
 뼹4	明	1		bright; clear
 뼹뼹4	明明	1		clearly; obviously
-뽀얄2	뽀影	1		shadow; image
-뽀ᄋᆤ2긴2	뽀要緊	1		important; urgent
-뽀찹	뽀插	1		insert
+뽀얄2	뽀影	1		not have a shadow; not be seen
+뽀ᄋᆤ2긴2	뽀要緊	1		not important; not urgent
+뽀찹	뽀插	1		do not insert; not inserted
 뾔1표	買票	1		buy a ticket
 뾔2	買	1		buy
 뾔5	賣	2		sell
-뾔ᄋᆤ2긴2	뾔要緊	1		important; urgent
+뾔ᄋᆤ2긴2	뾔要緊	1		won't be important; won't be urgent
 뾔표	賣票	2		sell tickets
 뾧1표	買票	1		buy a ticket
 뾧2	買	1		buy
@@ -2029,7 +2029,7 @@ reading	hanri	priority	corrected	english
 셩5심1	傷心	1		hurt; wound; heart; mind
 내5	奈	1		
 ᄀᅷ2달1	到今	1		arrive; reach
-뽀채1강1	뽀彩工	1		work
+뽀채1강1	뽀彩工	1		not work
 빡니5	茉莉	1		
 춘5틸1	春天	1		sky; day
 츄5틸1	秋天	1		sky; day
