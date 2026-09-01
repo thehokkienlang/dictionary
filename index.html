@@ -8,8 +8,8 @@
       name="description"
       content="Search Hanri, Tangliengim Hangul, and Lomari pronunciations from the Hokkien Tangliengim dictionary data."
     >
-    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-nasal-toggle" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260901-nasal-toggle">
+    <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-ios-toggle" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=20260901-ios-toggle">
   </head>
   <body>
     <header class="app-header">
@@ -29,7 +29,10 @@
           <label class="search-label" for="searchInput">Search</label>
           <div class="input-mode-group">
             <button id="hangulKeyboardToggle" class="hangul-keyboard-toggle" type="button" aria-pressed="false">
-              Enable Hangul keyboard
+              <span class="toggle-label">Enable Hangul keyboard</span>
+              <span class="toggle-switch" aria-hidden="true">
+                <span class="toggle-knob"></span>
+              </span>
             </button>
           </div>
         </div>
@@ -71,7 +74,7 @@
       </article>
     </template>
 
-    <script src="web-hangul-ime.js?v=20260901-nasal-toggle"></script>
-    <script src="app.js?v=20260901-nasal-toggle"></script>
+    <script src="web-hangul-ime.js?v=20260901-ios-toggle"></script>
+    <script src="app.js?v=20260901-ios-toggle"></script>
   </body>
 </html>

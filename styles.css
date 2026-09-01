@@ -163,23 +163,64 @@ h1 {
 
 .hangul-keyboard-toggle {
   min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid rgba(15, 118, 110, 0.45);
-  border-radius: 7px;
-  background: var(--surface-soft);
-  color: var(--accent-strong);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #475569;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 0.9rem;
   font-weight: 800;
   outline: none;
 }
 
 .hangul-keyboard-toggle:hover,
-.hangul-keyboard-toggle:focus-visible,
-.hangul-keyboard-toggle[aria-pressed="true"] {
-  border-color: rgba(15, 118, 110, 0.7);
-  background: #ffffff;
+.hangul-keyboard-toggle:focus-visible {
   color: var(--accent-strong);
+}
+
+.hangul-keyboard-toggle:focus-visible .toggle-switch {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+}
+
+.toggle-label {
+  white-space: nowrap;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.28);
+  transition: transform 140ms ease;
+}
+
+.hangul-keyboard-toggle[aria-pressed="true"] {
+  color: var(--accent-strong);
+}
+
+.hangul-keyboard-toggle[aria-pressed="true"] .toggle-switch {
+  background: var(--accent);
+}
+
+.hangul-keyboard-toggle[aria-pressed="true"] .toggle-knob {
+  transform: translateX(20px);
 }
 
 .ime-candidates {
