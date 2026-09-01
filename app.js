@@ -1,7 +1,7 @@
 const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-bo-negatives";
 const MAX_INITIAL_RESULTS = 24;
 const MAX_SEARCH_RESULTS = 80;
-const QUICK_SEARCHES = ["問題", "世界", "囝", "𤆬", "bun-toe", "se-kai"];
+const QUICK_SEARCHES = ["問題", "世界", "囝", "bun-toe", "se-kai"];
 
 const state = {
   entries: [],
@@ -1130,7 +1130,7 @@ function setInputMode(mode) {
   if (hangulKeyboardToggle) {
     hangulKeyboardToggle.setAttribute("aria-pressed", String(state.inputMode === "hanri-hangul"));
   }
-  searchInput.placeholder = "Search Hanri, Hangul, Lomari, or English...";
+  searchInput.placeholder = "Type 漢字, 한글, Lomari, or English...";
   searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
   hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
   renderResults();
