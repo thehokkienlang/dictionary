@@ -401,6 +401,23 @@ function isFinalJamo(char) {
   return code >= 0x11a8 && code <= 0x11ff;
 }
 
+function codePointAtInfo(text, index) {
+  const code = text.codePointAt(index);
+  if (code === undefined) return null;
+  const char = String.fromCodePoint(code);
+  return { char, code, end: index + char.length };
+}
+
+function isHanriChar(char) {
+  const code = char?.codePointAt(0);
+  if (code === undefined) return false;
+  return (
+    (code >= 0x3400 && code <= 0x4dbf) ||
+    (code >= 0x4e00 && code <= 0x9fff) ||
+    (code >= 0x20000 && code <= 0x2ebef)
+  );
+}
+
 function readingUnitAt(text, index) {
   const char = text[index];
   if (!char) return null;
@@ -418,6 +435,40 @@ function readingUnitAt(text, index) {
   }
 
   return { text: char, end: index + 1, canCarryTone: false };
+}
+
+function headwordUnitAt(text, index) {
+  const hangulUnit = readingUnitAt(text, index);
+  if (hangulUnit?.canCarryTone) {
+    const tone = text[hangulUnit.end];
+    const end = isToneMark(tone) ? hangulUnit.end + 1 : hangulUnit.end;
+    return {
+      kind: "hangul",
+      text: hangulUnit.text,
+      raw: text.slice(index, end),
+      end,
+    };
+  }
+
+  const first = codePointAtInfo(text, index);
+  if (!first) return null;
+
+  if (isHanriChar(first.char)) {
+    let end = first.end;
+    while (end < text.length) {
+      const next = codePointAtInfo(text, end);
+      if (!next || !isHanriChar(next.char)) break;
+      end = next.end;
+    }
+    return { kind: "hanri", text: text.slice(index, end), end };
+  }
+
+  return { kind: "literal", text: first.char, end: first.end };
+}
+
+function readingUnitToneEnd(text, unit) {
+  const tone = text[unit.end];
+  return unit.canCarryTone && isToneMark(tone) ? unit.end + 1 : unit.end;
 }
 
 function tonedHangulNode(unit, tone) {
@@ -496,6 +547,93 @@ function renderInlineUpperToneReading(reading) {
   return fragment;
 }
 
+function findReadingUnitStart(text, start, unitText) {
+  let index = start;
+  while (index < text.length) {
+    const unit = readingUnitAt(text, index);
+    if (!unit) break;
+    if (unit.canCarryTone && unit.text === unitText) {
+      return index;
+    }
+    index = readingUnitToneEnd(text, unit);
+  }
+  return -1;
+}
+
+function findNextMixedReadingBoundary(source, sourceIndex, reading, readingIndex) {
+  let index = sourceIndex;
+  while (index < source.length) {
+    const unit = headwordUnitAt(source, index);
+    if (!unit) break;
+
+    if (unit.kind === "hangul") {
+      const match = findReadingUnitStart(reading, readingIndex, unit.text);
+      if (match >= 0) return match;
+    } else if (unit.kind === "literal") {
+      const match = reading.indexOf(unit.text, readingIndex);
+      if (match >= 0) return match;
+    }
+
+    index = unit.end;
+  }
+  return reading.length;
+}
+
+function appendHanriRuby(fragment, hanriText, readingText) {
+  if (!readingText) {
+    fragment.append(displayTextNode(hanriText));
+    return;
+  }
+
+  const ruby = document.createElement("ruby");
+  ruby.className = "entry-headword-ruby";
+  const base = document.createElement("span");
+  base.className = "entry-headword-base";
+  base.append(displayTextNode(hanriText));
+  const rt = document.createElement("rt");
+  rt.className = "entry-headword-reading";
+  rt.append(renderInlineUpperToneReading(readingText));
+  ruby.append(base, rt);
+  fragment.append(ruby);
+}
+
+function renderMixedEntryHeadword(group, reading) {
+  const fragment = document.createDocumentFragment();
+  const source = String(group.hanri || "");
+  let sourceIndex = 0;
+  let readingIndex = 0;
+
+  while (sourceIndex < source.length) {
+    const unit = headwordUnitAt(source, sourceIndex);
+    if (!unit) break;
+
+    if (unit.kind === "hanri") {
+      const boundary = findNextMixedReadingBoundary(source, unit.end, reading, readingIndex);
+      appendHanriRuby(fragment, unit.text, reading.slice(readingIndex, boundary));
+      readingIndex = boundary;
+    } else if (unit.kind === "hangul") {
+      const hangul = document.createElement("span");
+      hangul.className = "entry-headword-hangul entry-headword-inline-hangul";
+      hangul.append(renderToneMarkedReading(unit.raw));
+      fragment.append(hangul);
+
+      const readingUnit = readingUnitAt(reading, readingIndex);
+      if (readingUnit?.canCarryTone && readingUnit.text === unit.text) {
+        readingIndex = readingUnitToneEnd(reading, readingUnit);
+      }
+    } else {
+      fragment.append(displayTextNode(unit.text));
+      if (reading.startsWith(unit.text, readingIndex)) {
+        readingIndex += unit.text.length;
+      }
+    }
+
+    sourceIndex = unit.end;
+  }
+
+  return fragment;
+}
+
 function renderEntryHeadword(group) {
   const fragment = document.createDocumentFragment();
   const primaryReading = group.readings[0]?.reading || group.hanri || "";
@@ -505,6 +643,11 @@ function renderEntryHeadword(group) {
     hangul.className = "entry-headword-hangul";
     hangul.append(renderToneMarkedReading(primaryReading));
     fragment.append(hangul);
+    return fragment;
+  }
+
+  if (group.kind === "mixed_hanri") {
+    fragment.append(renderMixedEntryHeadword(group, primaryReading));
     return fragment;
   }
 
