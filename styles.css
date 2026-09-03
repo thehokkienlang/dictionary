@@ -471,7 +471,7 @@ h1 {
 
 .hangul-tone rt {
   position: absolute;
-  top: calc(-0.84em - 1px);
+  top: calc(-0.84em - 2px);
   left: calc(50% - 1px);
   transform: translateX(-50%);
   color: #1f2937;
