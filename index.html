@@ -9,7 +9,7 @@
       content="Search Hanri, Tangliengim Hangul, and Lomari pronunciations from the Hokkien Tangliengim dictionary data."
     >
     <link rel="icon" href="assets/tangliengim-mark.svg?v=20260901-mobile-ime" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260901-under-construction">
+    <link rel="stylesheet" href="styles.css?v=20260903-search-pages">
   </head>
   <body>
     <header class="app-header">
@@ -56,14 +56,15 @@
 
         <div class="ime-candidates" id="imeCandidates" aria-label="Hanri candidates"></div>
 
-        <div class="quick-search" id="quickSearch" aria-label="Suggested searches"></div>
       </section>
 
-      <section class="summary-bar" aria-live="polite">
+      <section id="summaryBar" class="summary-bar" aria-live="polite" hidden>
         <span id="resultSummary">Loading entries...</span>
       </section>
 
       <section id="results" class="results" aria-label="Dictionary results"></section>
+
+      <nav id="pagination" class="pagination" aria-label="Search result pages" hidden></nav>
     </main>
 
     <footer class="site-footer">
@@ -81,6 +82,6 @@
     </template>
 
     <script src="web-hangul-ime.js?v=20260901-mobile-ime"></script>
-    <script src="app.js?v=20260901-tsv-refresh"></script>
+    <script src="app.js?v=20260903-search-pages"></script>
   </body>
 </html>

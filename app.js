@@ -1,23 +1,23 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260901-tsv-refresh";
-const MAX_INITIAL_RESULTS = 24;
-const MAX_SEARCH_RESULTS = 80;
-const QUICK_SEARCHES = ["問題", "世界", "囝", "bun-toe", "se-kai"];
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260903-search-pages";
+const RESULTS_PER_PAGE = 20;
 
 const state = {
   entries: [],
   groups: [],
   inputMode: "lomari",
   loaded: false,
+  currentPage: 1,
   readingCandidates: new Map(),
 };
 
 const searchInput = document.querySelector("#searchInput");
 const clearButton = document.querySelector("#clearButton");
+const summaryBar = document.querySelector("#summaryBar");
 const resultSummary = document.querySelector("#resultSummary");
 const dataStatus = document.querySelector("#dataStatus");
 const results = document.querySelector("#results");
 const template = document.querySelector("#resultTemplate");
-const quickSearch = document.querySelector("#quickSearch");
+const pagination = document.querySelector("#pagination");
 const hangulKeyboardToggle = document.querySelector("#hangulKeyboardToggle");
 const imeCandidates = document.querySelector("#imeCandidates");
 const hangulComposer = new TangliengimHangulIme.Composer();
@@ -199,7 +199,7 @@ function scoreField(value, query, boost) {
 
 function scoreGroup(group, queries, mode) {
   if (!queries.length) {
-    return group.kind === "plain_hanri" ? 1 : 0;
+    return 0;
   }
 
   const fields = [
@@ -226,7 +226,6 @@ function scoreGroup(group, queries, mode) {
 function searchGroups() {
   const rawQuery = searchInput.value.trim();
   const queries = queryVariants(rawQuery);
-  const limit = queries.length ? MAX_SEARCH_RESULTS : MAX_INITIAL_RESULTS;
 
   const matches = state.groups
     .map((group) => ({ group, score: scoreGroup(group, queries, state.inputMode) }))
@@ -238,10 +237,19 @@ function searchGroups() {
       a.group.hanri.localeCompare(b.group.hanri)
     );
 
+  const total = matches.length;
+  const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
+  const page = totalPages
+    ? Math.max(1, Math.min(state.currentPage, totalPages))
+    : 1;
+  const start = (page - 1) * RESULTS_PER_PAGE;
+
   return {
     rawQuery,
-    shown: matches.slice(0, limit).map((item) => item.group),
-    total: matches.length,
+    shown: matches.slice(start, start + RESULTS_PER_PAGE).map((item) => item.group),
+    total,
+    page,
+    totalPages,
   };
 }
 
@@ -1087,26 +1095,89 @@ function renderReading(entry) {
   return wrapper;
 }
 
+function paginationItems(page, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (page <= 4) {
+    return [1, 2, 3, 4, 5, "ellipsis", totalPages];
+  }
+
+  if (page >= totalPages - 3) {
+    return [1, "ellipsis", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [1, "ellipsis-before", page - 1, page, page + 1, "ellipsis-after", totalPages];
+}
+
+function renderPagination(page, totalPages) {
+  pagination.replaceChildren();
+  pagination.hidden = totalPages <= 1;
+  if (totalPages <= 1) return;
+
+  const makeButton = (label, nextPage, options = {}) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "page-button";
+    button.textContent = label;
+    button.disabled = options.disabled || false;
+    if (options.current) {
+      button.classList.add("current");
+      button.setAttribute("aria-current", "page");
+    }
+    button.addEventListener("click", () => {
+      state.currentPage = nextPage;
+      renderResults();
+      searchInput.focus();
+    });
+    return button;
+  };
+
+  pagination.append(makeButton("<", Math.max(1, page - 1), { disabled: page === 1 }));
+  for (const item of paginationItems(page, totalPages)) {
+    if (typeof item === "number") {
+      pagination.append(makeButton(String(item), item, { current: item === page }));
+    } else {
+      const ellipsis = document.createElement("span");
+      ellipsis.className = "page-ellipsis";
+      ellipsis.textContent = "...";
+      pagination.append(ellipsis);
+    }
+  }
+  pagination.append(makeButton(">", Math.min(totalPages, page + 1), { disabled: page === totalPages }));
+}
+
 function renderResults() {
   if (!state.loaded) return;
 
-  const { rawQuery, shown, total } = searchGroups();
+  const { rawQuery, shown, total, page, totalPages } = searchGroups();
   results.replaceChildren();
   clearButton.hidden = !searchInput.value;
   renderImeCandidates();
+
+  if (!rawQuery) {
+    summaryBar.hidden = true;
+    pagination.hidden = true;
+    pagination.replaceChildren();
+    resultSummary.textContent = "";
+    return;
+  }
+
+  summaryBar.hidden = false;
 
   if (!shown.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
     const title = document.createElement("strong");
-    title.textContent = rawQuery ? "No matching entries yet" : "Start with a search";
+    title.textContent = "No matching entries yet";
     const note = document.createElement("span");
-    note.textContent = rawQuery
-      ? "Try Hanri, Tangliengim Hangul, Lomari, or English meanings."
-      : "Search by Chinese characters, Tangliengim Hangul, Lomari, or English.";
+    note.textContent = "Try Hanri, Tangliengim Hangul, Lomari, or English meanings.";
     empty.append(title, note);
     results.append(empty);
-    resultSummary.textContent = rawQuery ? "0 results" : "No entries";
+    resultSummary.textContent = "0 results";
+    pagination.hidden = true;
+    pagination.replaceChildren();
     return;
   }
 
@@ -1126,10 +1197,10 @@ function renderResults() {
     results.append(node);
   }
 
-  const capped = shown.length < total ? `, showing ${shown.length}` : "";
-  resultSummary.textContent = rawQuery
-    ? `${total} result${total === 1 ? "" : "s"}${capped}`
-    : `Showing ${shown.length} starter entries from ${state.groups.length} searchable entries`;
+  const rangeStart = (page - 1) * RESULTS_PER_PAGE + 1;
+  const rangeEnd = rangeStart + shown.length - 1;
+  resultSummary.textContent = `${total} result${total === 1 ? "" : "s"} · showing ${rangeStart}-${rangeEnd}`;
+  renderPagination(page, totalPages);
 }
 
 function setInputMode(mode) {
@@ -1140,6 +1211,7 @@ function setInputMode(mode) {
   searchInput.placeholder = "Type 漢字, 한글, Lomari, or English...";
   searchInput.classList.toggle("hangul-ime-active", state.inputMode === "hanri-hangul");
   hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
+  state.currentPage = 1;
   renderResults();
 }
 
@@ -1175,6 +1247,7 @@ function updateSearchFromComposer() {
   const cursor = hangulComposer.displayCursorPos();
   searchInput.setSelectionRange(cursor, cursor);
   internalSearchUpdate = false;
+  state.currentPage = 1;
   renderResults();
 }
 
@@ -1253,6 +1326,8 @@ async function loadDictionary() {
   } catch (error) {
     state.loaded = true;
     dataStatus.textContent = "Dictionary failed to load";
+    summaryBar.hidden = false;
+    pagination.hidden = true;
     resultSummary.textContent = "Check that public/data/hokkien-hanri-dict.json exists.";
     results.replaceChildren();
     const empty = document.createElement("div");
@@ -1269,6 +1344,7 @@ searchInput.addEventListener("input", () => {
   if (state.inputMode === "hanri-hangul") {
     hangulComposer.setText(searchInput.value, searchInput.selectionStart ?? searchInput.value.length);
   }
+  state.currentPage = 1;
   renderResults();
 });
 searchInput.addEventListener("click", () => {
@@ -1280,6 +1356,7 @@ searchInput.addEventListener("click", () => {
 clearButton.addEventListener("click", () => {
   searchInput.value = "";
   hangulComposer.setText("", 0);
+  state.currentPage = 1;
   searchInput.focus();
   renderResults();
 });
@@ -1287,22 +1364,6 @@ hangulKeyboardToggle?.addEventListener("click", () => {
   setInputMode(state.inputMode === "hanri-hangul" ? "lomari" : "hanri-hangul");
   searchInput.focus();
 });
-
-if (quickSearch) {
-  for (const value of QUICK_SEARCHES) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "quick-chip";
-    button.textContent = value;
-    button.addEventListener("click", () => {
-      searchInput.value = value;
-      hangulComposer.setText(value, value.length);
-      searchInput.focus();
-      renderResults();
-    });
-    quickSearch.append(button);
-  }
-}
 
 loadDictionary();
 setInputMode("lomari");
