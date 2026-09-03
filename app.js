@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260903-search-pages";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260903-phrase-glosses";
 const RESULTS_PER_PAGE = 10;
 
 const state = {
