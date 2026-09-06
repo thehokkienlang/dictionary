@@ -20,6 +20,8 @@ data/                 Dictionary and source linguistic data
 public/audio_files/   Pronunciation audio assets, grouped by initial consonant
 public/data/          Generated JSON data for the website
 tools/                Data conversion and validation scripts
+web-hangul-ime.js     Browser Tangliengim Hangul composer
+web-ime-core.js       Shared web IME controller used by dictionary search and /ime/
 ```
 
 Rebuild the web dictionary data:
