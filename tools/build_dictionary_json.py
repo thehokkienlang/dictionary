@@ -98,7 +98,7 @@ def web_path(path: Path) -> str:
     return str(path.relative_to(REPO_ROOT)).replace("\\", "/")
 
 
-def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, Any]:
+def audio_for_reading(ime, audio_root: Path, reading: str, audio_mode: str | None = None) -> dict[str, Any]:
     segments: list[dict[str, Any]] = []
     files: list[str] = []
     missing: list[str] = []
@@ -109,7 +109,8 @@ def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, Any]:
         return {"segments": segments, "files": files, "missing": missing}
 
     try:
-        audio_units, unknown_hanri = ime.visible_text_to_audio_segments(reading)
+        mode = audio_mode or getattr(ime, "AUDIO_MODE_TAIPEI", "taipei")
+        audio_units, unknown_hanri = ime.visible_text_to_audio_segments(reading, mode)
     except Exception:
         return {"segments": segments, "files": files, "missing": [reading]}
 
@@ -176,6 +177,19 @@ def audio_for_reading(ime, audio_root: Path, reading: str) -> dict[str, Any]:
     return {"segments": segments, "files": files, "missing": missing}
 
 
+def with_singapore_audio_when_needed(ime, audio_root: Path, reading: str) -> dict[str, Any]:
+    audio = audio_for_reading(ime, audio_root, reading, getattr(ime, "AUDIO_MODE_TAIPEI", "taipei"))
+    singapore_audio = audio_for_reading(
+        ime,
+        audio_root,
+        reading,
+        getattr(ime, "AUDIO_MODE_SINGAPORE", "singapore"),
+    )
+    if singapore_audio != audio:
+        audio["singapore"] = singapore_audio
+    return audio
+
+
 def append_index(index: dict[str, list[str]], key: str, entry_id: str) -> None:
     key = str(key or "")
     if key:
@@ -236,7 +250,7 @@ def build_dictionary(tsv_path: Path, audio_root: Path = DEFAULT_AUDIO_ROOT) -> d
             entry_id = f"tsv-{row_number:05d}"
             lomari = reading_to_lomari(tone_marker, effective_reading)
             reading_base = tone_marker.strip_reading_tones(effective_reading)
-            audio = audio_for_reading(ime, audio_root, effective_reading)
+            audio = with_singapore_audio_when_needed(ime, audio_root, effective_reading)
             entry = {
                 "id": entry_id,
                 "row": row_number,

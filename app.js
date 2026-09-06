@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260906-new-tsv-rows";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260906-singapore-audio";
 const RESULTS_PER_PAGE = 10;
 const ImeCore = window.TangliengimImeCore;
 const {
