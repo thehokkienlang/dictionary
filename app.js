@@ -1,4 +1,4 @@
-const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260903-tsv-json-sync";
+const DATA_URL = "public/data/hokkien-hanri-dict.json?v=20260906-new-tsv-rows";
 const RESULTS_PER_PAGE = 10;
 
 const state = {
