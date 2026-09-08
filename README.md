@@ -1,3 +1,16 @@
+> **Archived: development has moved.**
+>
+> The dictionary and IME now share one repository:
+> [thehokkienlang.github.io](https://github.com/thehokkienlang/thehokkienlang.github.io).
+> Edit the [canonical TSV](https://github.com/thehokkienlang/thehokkienlang.github.io/blob/main/data/hokkien_hanri_dict.tsv)
+> there. Both website interfaces are built together, including automatic JSON generation.
+>
+> Live interfaces: [Dictionary](https://thehokkienlang.github.io/dictionary/) and
+> [IME Pad](https://thehokkienlang.github.io/ime/).
+> This repository's files and history remain available for reference; its separate Pages deployment is retired.
+
+---
+
 # Hokkien Tangliengim
 
 Hokkien Tangliengim is a writing and dictionary toolkit for Hokkien.
